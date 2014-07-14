@@ -17,9 +17,14 @@ agent(carla).
 agent(hal).
 
 %% Agent's attributes
+
+%% NOTE: forse devi mettere valid_state(s(I,_,_,_))
+%% Infatti se fai la query loses(hal) ti da true una volta
+%% sola mentre forse dovrebbero essere tante quante
+%% gli stati dove I = 1.
 has_insulin(Ag, I):-
     agent(Ag),
-    insulin(_, I).
+    insulin(_, I),
 insulin(s(I, _, _, _), I):-
     bool(I).
 
@@ -27,6 +32,7 @@ has_money(Ag, M):-
     agent(Ag),
     money(_, M).
 money(s(_, M, _, _), M):-
+    valid_state(s(_, M, _, _)),
     fbool(M).
 
 is_alive(Ag, A):-
