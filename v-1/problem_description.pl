@@ -5,4 +5,6 @@
 
  * @author Francesco Perrone */
 
+agent(carla).
+agent(hal).
 
