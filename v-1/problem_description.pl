@@ -5,6 +5,48 @@
 
  * @author Francesco Perrone */
 
+%% attribute's values
+fbool(2).
+fbool(1).
+fbool(0).
+bool(1).
+bool(0).
+
+%% agents
 agent(carla).
 agent(hal).
 
+%% Agent's attributes
+has_insulin(Ag, I):-
+    agent(Ag),
+    insulin(_, I).
+insulin(s(I, _, _, _), I):-
+    bool(I).
+
+has_money(Ag, M):-
+    agent(Ag),
+    money(_, M).
+money(s(_, M, _, _), M):-
+    fbool(M).
+
+is_alive(Ag, A):-
+    agent(Ag),
+    alive(_,A).
+alive(s(_, _, A, _), A):-
+    fbool(A).
+
+world(W):-
+    w_attribute(_, W).
+w_attribute(s(_, _, _, W), W):-
+    bool(W).
+
+%% Agent's state(+State)
+state(State):-
+    valid_state(State).
+
+%% valid_state(+State:a state)
+valid_state(s(I, M, A, W)):-
+    bool(I),
+    fbool(M),
+    fbool(A),
+    bool(W).
