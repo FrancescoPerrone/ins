@@ -7,25 +7,22 @@
  *
  */
 
-%% attribute's values
+agent(carla).
+agent(hal).
+
+state(Ag, State):-
+    agent(Ag),
+    State = s(I, M, A, W),
+    bool(I),
+    fbool(M),
+    fbool(A),
+    bool(W).
+
 fbool(2).
 fbool(1).
 fbool(0).
 bool(1).
 bool(0).
-
-%% agents
-agent(carla).
-agent(hal).
-
-%% Valid state definition
-%% state(+s(I, M, A, W))
-state(Ag, s(I, M, A, W)):-
-    bool(I),
-    fbool(M),
-    fbool(A),
-    bool(W),
-    agent(Ag).
 
 %% Agent's attributes
 
