@@ -1,11 +1,20 @@
-/** 
- * <module> problem_description.pl
- * -------------------------------
- * This module implements a representation of Hal and Carla dilemma.
+:- use_module(library(pldoc)).
 
- * @author Francesco Perrone
- *
- */
+/** <module> problem_description.pl
+ -------------------------------
+This module implements a representation of Hal and Carla dilemma.
+@author Francesco Perrone
+*/
+
+%% problem_description.pl
+% -------------------------------
+% This module implements a representation of Hal and Carla dilemma.
+% author: Francesco Perrone
+
+%% :- doc_server(4000).    % Start PlDoc at port 4000
+%% :- portray_text(true).  % Enable portray of strings
+
+%% :- [load].              % load your program
 
 agent(carla).
 agent(hal).
@@ -18,11 +27,13 @@ state(Ag, State):-
     fbool(A),
     bool(W).
 
+bool(1).
+bool(0).
+
 fbool(2).
 fbool(1).
 fbool(0).
-bool(1).
-bool(0).
+
 
 %% Agent's attributes
 
@@ -55,7 +66,6 @@ world(W):-
 w_attribute(s(_, _, _, W), W):-
     bool(W).
 
-%% Actions
 lose(Ag, State):-
     State = s(1, _, A, _),
     is_alive(Ag, A), member(A, [1, 2]).
