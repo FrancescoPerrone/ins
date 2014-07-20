@@ -52,6 +52,9 @@ lose(State-Ag):-
     world(State-Ag),
     insulin(State, 1).
 
+%% applyLose(State-Ag, State2-Ag):-
+%%     lose(State-Ag) -> world(State2-Ag), insulin(State2, 0).
+
 %% Definition for action compensate
 compensate(State-Ag-State2-Ag2):-
     agent(Ag),
@@ -92,11 +95,15 @@ buy(State-Ag):-
     not(alive(State, 0)).
 
 %% Definition for action do_nothing
-do_nothing(State-Ag):-
+doNothing(State-Ag):-
     world(State-Ag),
     alive(State, A), member(A, [2,1,0]).
 
-%% Other representation predicates
+transientAg1([1, M, A, T]-Ag-lose-[0, M, A, T]-Ag).
+    
+
+%% This is a finite set of possible worlds that
+%% adhere to the restriction.
 q(States):- findall(Ag-State, world(State-Ag), States),
 	    X = [quoted(true), portray(true), 
 		 max_depth(100), 
