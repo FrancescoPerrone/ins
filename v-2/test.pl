@@ -4,10 +4,10 @@ agent(carla).
 %% Describe conditions for atoms be a representation of
 %% possible world
 state([I, M, A, W]):-
-    member(I, [1,0]),
+    member(I, [1, 0]),
     member(M, [2, 1, 0]),
-    member(A, [2,1,0]),
-    member(W, [1,0]).
+    member(A, [2, 1, 0]),
+    member(W, [1, 0]).
 
 %% Describe a template for representing a particular
 %% possible world, subset of all possible worlds
@@ -47,7 +47,7 @@ restriction(State):-
     member(Val, [1,0]).
 
 %% Definition for action lose
-lose(State-Ag):-
+action(State-Ag, lose):-
     agent(Ag),
     world(State-Ag),
     insulin(State, 1).
@@ -55,27 +55,18 @@ lose(State-Ag):-
 %% applyLose(State-Ag, State2-Ag):-
 %%     lose(State-Ag) -> world(State2-Ag), insulin(State2, 0).
 
-%% Definition for action compensate
-compensate(State-Ag-State2-Ag2):-
+action(State-Ag, compensate):-
     agent(Ag),
-    agent(Ag2),
-    not(Ag = Ag2),
     world(State-Ag),
-    world(State2-Ag2),
     money(State, M), member(M, [1,2]),
-    insulin(State, 1),
-    alive(State2, A), member(A, [1,2]).
+    insulin(State, 1).
 
 %% Definition for action take
-take(State-Ag-State2-Ag2):-
+action(State-Ag, take):-
     agent(Ag),
-    agent(Ag2),
-    not(Ag = Ag2),
     world(State-Ag),
-    world(State2-Ag2),
     insulin(State, 0),
-    alive(State, A), member(A, [1,2]),
-    insulin(State2, 1).
+    alive(State, A), member(A, [1,2]).
 
 %% Definition for action buy
 %% Notice: here I'm following strictly what the paper
@@ -86,7 +77,7 @@ take(State-Ag-State2-Ag2):-
 %% restriction, for an agent to have 0 insulin means is life is at
 %% risk (alive is 1) and an agent can only buy insulin if the agent
 %% does not have insulin.
-buy(State-Ag):-
+action(State-Ag, buy):-
     agent(Ag),
     world(State-Ag),
     money(State, M), member(M, [1,2]),
@@ -94,12 +85,40 @@ buy(State-Ag):-
     insulin(State, 0),
     not(alive(State, 0)).
 
+
 %% Definition for action do_nothing
-doNothing(State-Ag):-
+action(State-Ag, doNothing):-
     world(State-Ag),
     alive(State, A), member(A, [2,1,0]).
 
-transientAg1([1, M, A, T]-Ag-lose-[0, M, A, T]-Ag).
+%% Other actions.
+%% The following definition explicitely take into
+%% consideration the state of affairs of both
+%% agent involved in the action.
+
+%% Definition for action compensate
+action2ag(State-Ag-State2-Ag2, compensate):-
+    agent(Ag),
+    agent(Ag2),
+    not(Ag = Ag2),
+    world(State-Ag),
+    world(State2-Ag2),
+    money(State, M), member(M, [1,2]),
+    insulin(State, 1),
+    alive(State2, A), member(A, [1,2]).
+
+%% Definition for action take
+action2ag(State-Ag-State2-Ag2, take):-
+    agent(Ag),
+    agent(Ag2),
+    not(Ag = Ag2),
+    world(State-Ag),
+    world(State2-Ag2),
+    insulin(State, 0),
+    alive(State, A), member(A, [1,2]),
+    insulin(State2, 1).
+
+transientAg1([1, M, A, T]-Ag, lose, [0, M, A, T]-Ag).
     
 
 %% This is a finite set of possible worlds that
@@ -109,3 +128,12 @@ q(States):- findall(Ag-State, world(State-Ag), States),
 		 max_depth(100), 
 		 spacing(next_argument)],
 	    set_prolog_flag(toplevel_print_options, X).
+
+%% The set of all precondition for a given
+%% action.
+rho(States, Action):-
+    setof(Preconditions, action(Preconditions-_, Action), States),
+    X = [quoted(true), portray(true),
+	max_depth(100),
+	spacing(next_argument)],
+    set_prolog_flag(toplevel_print_options, X).
