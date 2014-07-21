@@ -131,8 +131,9 @@ q(States):- findall(Ag-State, world(State-Ag), States),
 
 %% The set of all precondition for a given
 %% action.
-rho(States, Action):-
-    setof(Preconditions, action(Preconditions-_, Action), States),
+rho(Ag-Set, Action):-
+    agent(Ag),
+    findall(States, action(States-Ag, Action), Set),
     X = [quoted(true), portray(true),
 	max_depth(100),
 	spacing(next_argument)],
