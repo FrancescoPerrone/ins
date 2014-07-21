@@ -118,19 +118,19 @@ action2ag(State-Ag-State2-Ag2, take):-
     alive(State, A), member(A, [1,2]),
     insulin(State2, 1).
 
-transientAg1([1, M, A, T]-Ag, lose, [0, M, A, T]-Ag).
-    
-
-%% This is a finite set of possible worlds that
-%% adhere to the restriction.
+%% Finite non empty set of possible state.
+%% Notice: the set contains all possible worlds
+%% taken with their restriction.
+%% This is more a subset of the set of all possible worlds.
 q(States):- findall(Ag-State, world(State-Ag), States),
 	    X = [quoted(true), portray(true), 
 		 max_depth(100), 
 		 spacing(next_argument)],
 	    set_prolog_flag(toplevel_print_options, X).
 
-%% The set of all precondition for a given
-%% action.
+%% Action precondition function
+%% For each action defines the set of states from which
+%% it can be executed.
 rho(Ag-Set, Action):-
     agent(Ag),
     findall(States, action(States-Ag, Action), Set),
