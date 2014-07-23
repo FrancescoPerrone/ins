@@ -1,17 +1,16 @@
-### y(State-hal:a valid state, Action:List)
-#### Find the set of all actions available from a given state.
+** y(State-hal:a valid state, Action:List **
+Finds the set of all `actions available` from a `given state`.
 ```
  y(State-Ag, State-PossibleAction):-
       state(State), agent(Ag),
       findall(Action, action(State-Ag, Action), PossibleAction),
       setFormat.
 ```
+_Using 'state(State)' The list will contain some possible world from
+which no action are defined_.
 
-As it is, this predicate could return a list of all action available
-from a given state: 'state(State)'. The list will contain some state
-from which no action is defined. This is because the action available
-is dependant on the restriction/2 defined for the set of all possible
-worlds.
+This is because, actions are bound to a subset of possible states and
+not to all states we can possibly define.
 
-If we change `state(State)` with `world(State-Ag)` the predicate only
-find those states for which one or more actions are available.
+Change `state(State)` with `world(State-Ag)` to see the list of all
+possible worlds that admit one or more actions.
