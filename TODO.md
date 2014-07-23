@@ -1,7 +1,6 @@
 ```
 action/2
 ---------------------------------------------------------------------------------
-
 Problem: The predicate action/2 as it is, is "contingent".
 
 This is because it relies on the predicate world/1 (which creates a subset of all
@@ -14,7 +13,6 @@ world/1.
 ```
 rho/1
 ---------------------------------------------------------------------------------
-
 Problem: The predicate rho/2 is "contingent".
 
 See above for details.
@@ -33,7 +31,6 @@ TODO: Correct action/2
 ```
 Interpretation function - x/2 and pi/2
 ---------------------------------------------------------------------------------
-
 Problem: instantiate only with the worlds were insulin is 1, but works
 fine when querying about states having insulin 0
 
