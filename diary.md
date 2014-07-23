@@ -1,4 +1,4 @@
-__y(State-hal:a valid state, Action:List__
+__y(State-hal:a valid state, Action:List__.
 Finds the set of all `actions available` from a `given state`.
 ```
  y(State-Ag, State-PossibleAction):-
