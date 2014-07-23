@@ -1,4 +1,4 @@
-```action/2
+*action/2*
 ---------------------------------------------------------------------------------
 
 Problem: The predicate action/2 as it is, is "contingent".
@@ -11,7 +11,7 @@ TODO: change the predicate so as it is generally valid and delete
 world/1.
 
 
-** rho/1 **
+*rho/1*
 ---------------------------------------------------------------------------------
 
 Problem: The predicate rho/2 is "contingent".
@@ -21,7 +21,7 @@ See above for details.
 TODO: Correct action/2
 
 
-** perform/3 **
+*perform/3*
 _________________________________________________________________________________
 Problem: The predicate perform/3 is "contingent".
 
