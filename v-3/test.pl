@@ -1,3 +1,5 @@
+:- include(list_manip).
+
 agent(hal).
 agent(carla).
 
@@ -163,10 +165,20 @@ perform(Init-Ag, Fin, doNothing):-
 	(A = 1, I = 0) *-> Af = 0;
 	Af = A).
 
-%% Finite non empty set of possible state.
-%% Notice: the set contains all possible worlds
-%% taken with their restriction.
-%% This is more a subset of the set of all possible worlds.
+%% Interpretation function
+%% This is just a draft. DO NOT MAKE ESTENSIVE USE OF IT.
+x(State-Ag, Pi):-
+    (insulin(State, 1) *-> I = insulin-Ag; I = not_insulin-Ag),
+    (money(State, M), mem(M, [1,2]) *-> D = money-Ag; D = not_money-Ag),
+    (alive(State, A), mem(A, [1,2]) *-> E = alive-Ag; E = not_alive-Ag),
+    (time(State, 1) *-> T = open; T = closed),
+    Pi = [I, D, E, T].
+
+
+%% AATS
+%% ------------------------------------------------------------------------------
+
+%% The set of all possible world, with restriction
 q(States):- findall(Ag-State, world(State-Ag), States),
 	    X = [quoted(true), portray(true), 
 		 max_depth(100), 
@@ -174,8 +186,6 @@ q(States):- findall(Ag-State, world(State-Ag), States),
 	    set_prolog_flag(toplevel_print_options, X).
 
 %% Action precondition function
-%% For each action defines the set of states from which
-%% it can be executed.
 rho(Ag-Set, Action):-
     agent(Ag),
     findall(States, action(States-Ag, Action), Set),
