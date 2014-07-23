@@ -127,6 +127,9 @@ y(State-Ag, State-PossibleAction):-
     findall(Action, action(State-Ag, Action), PossibleAction),
     setFormat.
 
+transient(State-Ag-ActionSet, 1):-
+    world(State-Ag),
+    y(State-Ag, ActionSet).
 
 perform(Init-Ag, Fin, lose):-
     action(Init-Ag, lose),
