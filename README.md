@@ -1,6 +1,5 @@
 ## Moral Philosophy & Machine Ethics
-##### Notice: current uodated branch is v-3
-
+##### <span style="color:red">Notice: current up to date branch is v-3 </span>
 Can machines show moral intelligence?
 This is what I'm trying understand, and _(maybe)_ I'll let you know if I find any good stuff!
 
