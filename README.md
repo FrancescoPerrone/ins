@@ -1,4 +1,3 @@
-<font family="Monospace">
 ## Moral Philosophy & Machine Ethics
 ---------------------------------------------------------------------------------------------
 Can machines show moral intelligence?
@@ -17,4 +16,3 @@ Francesco (from a paradox)
 * Bench-Capon, A. C. T., & McBurney, P. (2006). Automating
 argumentation for deliberation in cases of conflict of interest. 
 _In Computational Models of Argument: Proceedings of COMMA 2006_ (Vol. 144, p. 279). IOS Press.
-</font>
