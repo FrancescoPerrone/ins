@@ -120,6 +120,8 @@ action2ag(State-Ag-State2-Ag2, take):-
     alive(State, A), member(A, [1,2]),
     insulin(State2, 1).
 
+%% Predicate name only provisional.
+%% Read ../diary.md
 y(State-Ag, State-PossibleAction):-
     state(State), agent(Ag),
     findall(Action, action(State-Ag, Action), PossibleAction),
