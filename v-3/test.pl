@@ -98,8 +98,6 @@ action(State-Ag, doNothing):-
 %% consideration the state of affairs of both
 %% agent involved in the action.
 
-
-
 %% Definition for action compensate
 action2ag(State-Ag-State2-Ag2, compensate):-
     agent(Ag),
@@ -121,6 +119,11 @@ action2ag(State-Ag-State2-Ag2, take):-
     insulin(State, 0),
     alive(State, A), member(A, [1,2]),
     insulin(State2, 1).
+
+y(State-Ag, PossibleAction):-
+    state(State), agent(Ag),
+    findall(Action, action(State-Ag, Action), PossibleAction),
+    setFormat.
 
 
 perform(Init-Ag, Fin, lose):-
