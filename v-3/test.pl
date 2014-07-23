@@ -165,9 +165,11 @@ perform(Init-Ag, Fin, doNothing):-
 	(A = 1, I = 0) *-> Af = 0;
 	Af = A).
 
-%% Interpretation function
+%% Interpretation function ancillary predicate
 %% This is just a draft. DO NOT MAKE ESTENSIVE USE OF IT.
+%% PI means, the set 
 x(State-Ag, Pi):-
+    agent(Ag),
     (insulin(State, 1) *-> I = insulin-Ag; I = not_insulin-Ag),
     (money(State, M), mem(M, [1,2]) *-> D = money-Ag; D = not_money-Ag),
     (alive(State, A), mem(A, [1,2]) *-> E = alive-Ag; E = not_alive-Ag),
@@ -175,21 +177,30 @@ x(State-Ag, Pi):-
     Pi = [I, D, E, T].
 
 
-%% AATS
+%% AATS sets
 %% ------------------------------------------------------------------------------
 
-%% The set of all possible world, with restriction
-q(States):- findall(Ag-State, world(State-Ag), States),
-	    X = [quoted(true), portray(true), 
+setFormat:-
+     X = [quoted(true), portray(true), 
 		 max_depth(100), 
 		 spacing(next_argument)],
 	    set_prolog_flag(toplevel_print_options, X).
+    
 
+%% The set of all possible world, with restriction
+q(States):- 
+    findall(Ag-State, world(State-Ag), States),
+    setFormat.
+	   
 %% Action precondition function
 rho(Ag-Set, Action):-
     agent(Ag),
     findall(States, action(States-Ag, Action), Set),
-    X = [quoted(true), portray(true),
-	max_depth(100),
-	spacing(next_argument)],
-    set_prolog_flag(toplevel_print_options, X).
+    setFormat.
+
+%% Interpretation function
+pi(Ag-Set, State):-
+    agent(Ag),
+    world(State-Ag),
+    findall(Pi, x(State-Ag, Pi), Set),
+    setFormat.
