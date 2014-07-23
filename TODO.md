@@ -1,4 +1,4 @@
-** action/2 **
+```action/2
 ---------------------------------------------------------------------------------
 
 Problem: The predicate action/2 as it is, is "contingent".
@@ -28,9 +28,3 @@ Problem: The predicate perform/3 is "contingent".
 See action/2 for details.
 
 TODO: Correct action/2
-
-
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
