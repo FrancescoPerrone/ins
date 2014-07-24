@@ -3,7 +3,7 @@ __y(State-hal:a valid state, Action:List)__
 Finds the set of all `actions available` from a `given state`.
 
 ```
-~~~~~~~~~~~~~{.pl}
+~~~~~~~~~~~~~
  y(State-Ag, State-PossibleAction):-
       state(State), agent(Ag),
       findall(Action, action(State-Ag, Action), PossibleAction),
