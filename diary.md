@@ -3,6 +3,7 @@ __y(State-hal:a valid state, Action:List)__
 Finds the set of all `actions available` from a `given state`.
 
 ```
+~~~~~~~~~~~~~{.pl}
  y(State-Ag, State-PossibleAction):-
       state(State), agent(Ag),
       findall(Action, action(State-Ag, Action), PossibleAction),
@@ -16,9 +17,15 @@ not to all states we can possibly define.
 
 Change `state(State)` with `world(State-Ag)` to see the list of all
 possible worlds that admit one or more actions.
+```
+__ATTENTION__
+I have just changed perfom(_, _, take), and added `world(Fin-Ag)'
+because lookup/2 was failing to perform any application of 'take' from
+the initial state due to missmatch with the world restriction!
+```
 
-
-__transient(State-Ag-Set, 1)__
+~~__transient(State-Ag-Set, 1)__~~
+(obsolete)
 
 Example output:
 

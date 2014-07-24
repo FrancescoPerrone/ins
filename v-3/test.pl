@@ -68,8 +68,7 @@ action(State-Ag, compensate):-
 action(State-Ag, take):-
     agent(Ag),
     world(State-Ag),
-    insulin(State, 0),
-    alive(State, A), member(A, [1,2]).
+    insulin(State, 0).
 
 %% Definition for action buy
 %% Notice: here I'm following strictly what the paper
@@ -159,12 +158,12 @@ perform(Init-Ag, Fin, compensate):-
 
 perform(Init-Ag, Fin, take):-
     action(Init-Ag, take),
-    Init = [_, M, A, T],
-    Fin = [If, Mf, Af, Tf],
+    Init = [_, M, _, T],
+    Fin = [If, Mf, _, Tf],
     If = 1,
     Mf = M,
-    Af = A,
-    Tf = T.
+    Tf = T,
+    world(Fin-Ag).
 
 perform(Init-Ag, Fin, doNothing):-
     action(Init-Ag, doNothing),
