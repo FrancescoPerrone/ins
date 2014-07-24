@@ -25,10 +25,17 @@ fidof(Index, [_|T], X):-
     !,
     Index is Step+1.
 
+%% Pick last element of a list
 last(X, [X|[]]).
 last(X, [_|T]):-
     last(X, T).
 
+%% Pick head/tail in a list
+pick(H, [H|T], T).
+
+%% Stolen from AI tutorial... don't like to be here!!!
+combine(Exps,Paths,NewPaths):-
+    append(Exps,Paths,NewPaths).
 
 %% Tail recursion.
 %% This will give problems of instantiations

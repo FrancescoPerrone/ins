@@ -127,7 +127,7 @@ y(State-Ag, State-PossibleAction):-
     findall(Action, action(State-Ag, Action), PossibleAction),
     setFormat.
 
-transient(State-Ag-ActionSet, 1):-
+transient(State-Ag-ActionSet):-
     world(State-Ag),
     y(State-Ag, ActionSet).
 
@@ -172,6 +172,13 @@ perform(Init-Ag, Fin, doNothing):-
     Fin = [I, M, Af, T], (
 	(A = 1, I = 0) *-> Af = 0;
 	Af = A).
+
+lookup(State-Ag, Act-Next-Ag):-
+    perform(State-Ag, Next, Act),
+    world(Next-Ag).
+lookup(State-Ag, [Act|Acts]-Next-Ag):-
+    y(State-Ag, State-Acts), pick(Act, Acts, _),
+    lookup(State-Ag, Acts-Next-Ag).
 
 %% Interpretation function ancillary predicate
 %% This is just a draft. DO NOT MAKE ESTENSIVE USE OF IT.
