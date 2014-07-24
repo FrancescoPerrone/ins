@@ -16,9 +16,10 @@ not to all states we can possibly define.
 
 Change `state(State)` with `world(State-Ag)` to see the list of all
 possible worlds that admit one or more actions.
-```
+
 **ATTENTION**
-I have just changed perfom(_, _, take), and added `world(Fin-Ag)'
+```
+I changed perfom(_, _, take), adding `world(Fin-Ag)'
 because lookup/2 was failing to perform any application of 'take' from
 the initial state due to miss-match with the world restriction!
 CORRECTIONS ARE NECESSARY THROUGHOUT ALL FINE REGARDING THIS POINT.
