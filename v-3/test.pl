@@ -176,8 +176,8 @@ lookup(State-Ag, Act-Next-Ag):-
     perform(State-Ag, Next, Act),
     world(Next-Ag).
 lookup(State-Ag, [Act|Acts]-Next-Ag):-
-    y(State-Ag, State-Acts), pick(Act, Acts, _),
-    lookup(State-Ag, Acts-Next-Ag).
+    y(State-Ag, State-Acts), pick(Act, Acts, Rest),
+    lookup(State-Ag, Rest-Next-Ag).
 
 %% Interpretation function ancillary predicate
 %% This is just a draft. DO NOT MAKE ESTENSIVE USE OF IT.
