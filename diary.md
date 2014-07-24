@@ -8,6 +8,7 @@ Finds the set of all `actions available` from a `given state`.
       state(State), agent(Ag),
       findall(Action, action(State-Ag, Action), PossibleAction),
       setFormat.
+~~~~~~~~~~~~~
 ```
 _Using 'state(State)' The list will contain some possible world from
 which no action are defined_.
