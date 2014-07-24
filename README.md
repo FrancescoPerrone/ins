@@ -5,7 +5,7 @@ This is what I'm trying understand, and _(maybe)_ I'll let you know if I find an
 
 Francesco (from a paradox)
 
-####### Tools
+###### Tools
 * SWI Prolog
 * emacs24
 * Ubuntu 14.4 LTS
