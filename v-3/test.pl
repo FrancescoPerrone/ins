@@ -72,7 +72,8 @@ action(State-Ag, compensate):-
 action(State-Ag, take):-
     agent(Ag),
     world(State-Ag),
-    insulin(State, 0).
+    insulin(State, 0),
+    alive(State, 1).
 
 %% Definition for action buy
 %% Notice: here I'm following strictly what the paper
@@ -183,10 +184,8 @@ lookup(State-Ag, [Act|Acts]-Next-Ag):-
     act_set(State-Ag, State-Acts), pick(Act, Acts, Rest),
     lookup(State-Ag, Rest-Next-Ag).
 
-
-lookup2(State-Ag, [H|T]):-
-    findall(Act-States-Ag, lookup(State-Ag, Act-States-Ag), Accessibles),
-    Accessibles = [H|T],
+lookup2(State-Ag, Accessibles):-
+    findall(States, lookup(State-Ag, _-States-Ag), Accessibles),
     setFormat. 
 
 
