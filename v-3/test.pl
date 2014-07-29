@@ -3,8 +3,8 @@
 agent(hal).
 agent(carla).
 
-%% Describe conditions for atoms be a representation of
-%% possible world
+%% Defines a state as a vector of four digits
+%% each one representing an agent's attribute.
 state([I, M, A, W]):-
     member(I, [1, 0]),
     member(M, [2, 1, 0]),
@@ -19,22 +19,26 @@ world(State-Ag):-
     agent(Ag),
     restriction(State).
 
-%% Assign insulin a value
+%% Defines the "property" value, for the insulin
+%% attribute.
 insulin(State, Val):-
     State = [I, _, _, _],
     I = Val.
 
-%% Assign alive a value
+%% Defines the "property" value, for the alive
+%% attribute.
 alive(State, Val):-
     State  = [_, _, A, _],
     A = Val.
 
-%% Assign money a value
+%% Defines the "property" value, for the money
+%% attribute.
 money(State, Val):-
     State  = [_, M, _, _],
     M = Val.
 
-%% Assign time a value
+%% Defines the "property" value, for the time
+%% attribute.
 time(State, Val):-
     State  = [_, _, _, T],
     T = Val.
@@ -121,14 +125,14 @@ action2ag(State-Ag-State2-Ag2, take):-
 
 %% Predicate name only provisional.
 %% Read ../diary.md
-y(State-Ag, State-PossibleAction):-
+act_set(State-Ag, State-PossibleAction):-
     state(State), agent(Ag),
     findall(Action, action(State-Ag, Action), PossibleAction),
     setFormat.
 
 transient(State-Ag-ActionSet):-
     world(State-Ag),
-    y(State-Ag, ActionSet).
+    act_set(State-Ag, ActionSet).
 
 perform(Init-Ag, Fin, lose):-
     action(Init-Ag, lose),
@@ -158,7 +162,7 @@ perform(Init-Ag, Fin, compensate):-
 
 perform(Init-Ag, Fin, take):-
     action(Init-Ag, take),
-    Init = [_, M, _, T],
+    Init = [_, M, 1, T],
     Fin = [If, Mf, _, Tf],
     If = 1,
     Mf = M,
@@ -176,19 +180,14 @@ lookup(State-Ag, Act-Next-Ag):-
     perform(State-Ag, Next, Act),
     world(Next-Ag).
 lookup(State-Ag, [Act|Acts]-Next-Ag):-
-    y(State-Ag, State-Acts), pick(Act, Acts, Rest),
+    act_set(State-Ag, State-Acts), pick(Act, Acts, Rest),
     lookup(State-Ag, Rest-Next-Ag).
 
-%% Interpretation function ancillary predicate
-%% This is just a draft. DO NOT MAKE ESTENSIVE USE OF IT.
-%% PI means, the set 
-x(State-Ag, Pi):-
-    agent(Ag),
-    (insulin(State, 1) *-> I = insulin-Ag; I = not_insulin-Ag),
-    (money(State, M), mem(M, [1,2]) *-> D = money-Ag; D = not_money-Ag),
-    (alive(State, A), mem(A, [1,2]) *-> E = alive-Ag; E = not_alive-Ag),
-    (time(State, 1) *-> T = open; T = closed),
-    Pi = [I, D, E, T].
+
+lookup2(State-Ag, [H|T]):-
+    findall(Act-States-Ag, lookup(State-Ag, Act-States-Ag), Accessibles),
+    Accessibles = [H|T],
+    setFormat. 
 
 
 %% AATS sets
@@ -212,9 +211,22 @@ rho(Ag-Set, Action):-
     findall(States, action(States-Ag, Action), Set),
     setFormat.
 
+
+
 %% Interpretation function
 pi(Ag-Set, State):-
     agent(Ag),
     world(State-Ag),
-    findall(Pi, x(State-Ag, Pi), Set),
+    findall(Pi, transmute(State-Ag, Pi), Set),
     setFormat.
+
+%% Interpretation function ancillary predicate
+%% This is just a draft. DO NOT MAKE ESTENSIVE USE OF IT.
+%% PI means, the set 
+transmute(State-Ag, Pi):-
+    agent(Ag),
+    (insulin(State, 1) *-> I = insulin-Ag; I = not_insulin-Ag),
+    (money(State, M), mem(M, [1,2]) *-> D = money-Ag; D = not_money-Ag),
+    (alive(State, A), mem(A, [1,2]) *-> E = alive-Ag; E = not_alive-Ag),
+    (time(State, 1) *-> T = open; T = closed),
+    Pi = [I, D, E, T].
