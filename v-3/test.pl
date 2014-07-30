@@ -184,9 +184,10 @@ lookup(State-Ag, [Act|Acts]-Next-Ag):-
     act_set(State-Ag, State-Acts), pick(Act, Acts, Rest),
     lookup(State-Ag, Rest-Next-Ag).
 
-lookup2(State-Ag, Accessibles):-
-    findall(States, lookup(State-Ag, _-States-Ag), Accessibles),
-    setFormat. 
+lookup2(State-Ag, [Accessible|Accessibles]):-
+    findall(Act-States, lookup(State-Ag, Act-States-Ag), List),
+    List = [Accessible|Accessibles],
+    setFormat.
 
 
 %% AATS sets
