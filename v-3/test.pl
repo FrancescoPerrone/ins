@@ -1,4 +1,5 @@
 :- include(list_manip).
+:- include(values).
 
 agent(hal).
 agent(carla).
@@ -177,10 +178,10 @@ perform(Init-Ag, Fin, doNothing):-
 	(A = 1, I = 0) *-> Af = 0;
 	Af = A).
 
-lookup(State-Ag, Act-Next-Ag):-
+lookup(State-Ag, Act-->Next-Ag):-
     perform(State-Ag, Next, Act),
     world(Next-Ag).
-lookup(State-Ag, [Act|Acts]-Next-Ag):-
+lookup(State-Ag, [Act|Acts]-->Next-Ag):-
     act_set(State-Ag, State-Acts), pick(Act, Acts, Rest),
     lookup(State-Ag, Rest-Next-Ag).
 
@@ -230,3 +231,8 @@ transmute(State-Ag, Pi):-
     (alive(State, A), mem(A, [1,2]) *-> E = alive-Ag; E = not_alive-Ag),
     (time(State, 1) *-> T = open; T = closed),
     Pi = [I, D, E, T].
+
+%% Set of values
+v(Set):-
+    setof(Value, Ag^(values(Ag, Values), member(Value, Values)), Set),
+    setFormat.
