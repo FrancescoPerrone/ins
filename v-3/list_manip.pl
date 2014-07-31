@@ -37,6 +37,17 @@ pick(H, [H|T], T).
 combine(Exps,Paths,NewPaths):-
     append(Exps,Paths,NewPaths).
 
+%% Evaluation function which which defines the stauts
+%% of a value, member of a set of values, after a transition
+%% from an initial state to a final state.
+%% eval(-Val, +Init:integer, +Fin:integer, +X)
+%% Vset is a set of values.
+eval(Val, Init, Fin, X):-
+    values(Vset),
+    member(X, Vset),
+    ( Fin > Init *-> Val = +X;
+      Val = -X), !.
+
 %% Tail recursion.
 %% This will give problems of instantiations
 %% tidof(1, [X|_], X).
