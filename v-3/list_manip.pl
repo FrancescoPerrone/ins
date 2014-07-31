@@ -45,8 +45,10 @@ combine(Exps,Paths,NewPaths):-
 eval(Val, Init, Fin, X):-
     values(Vset),
     member(X, Vset),
-    ( Fin > Init *-> Val = +X;
-      Val = -X), !.
+    ( (Fin > Init -> Val = +X);
+      (Fin < Init -> Val = -X);
+      (Fin = Init -> Val = nX) ),
+    !.
 
 %% Tail recursion.
 %% This will give problems of instantiations

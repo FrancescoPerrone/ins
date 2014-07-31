@@ -1,5 +1,4 @@
-:- include(list_manip).
-:- include(values).
+:-include(list_manip).
 
 agent(hal).
 agent(carla).
@@ -178,10 +177,10 @@ perform(Init-Ag, Fin, doNothing):-
 	(A = 1, I = 0) *-> Af = 0;
 	Af = A).
 
-lookup(State-Ag, Act-->Next-Ag):-
+lookup(State-Ag, Act-Vals-->Next-Ag):-
     perform(State-Ag, Next, Act),
     world(Next-Ag).
-lookup(State-Ag, [Act|Acts]-->Next-Ag):-
+lookup(State-Ag, [Act|Acts]-Vals-->Next-Ag):-
     act_set(State-Ag, State-Acts), pick(Act, Acts, Rest),
     lookup(State-Ag, Rest-Next-Ag).
 
