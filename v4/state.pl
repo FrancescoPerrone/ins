@@ -25,5 +25,21 @@ restriction(State):-
     (insulin(State, 1) -> alive(State, 2));
     (insulin(State, 0) -> alive(State, I), member(I, [1,0])).
 
-% Initial state
-init([0, 1, 1, 0]).
+
+% π (interpretation function)
+interpret(Intr, State):-
+    findall(I, interpretation(State, I), Intr).
+
+interpretation(State, insulin):-
+    insulin(State, 1).
+
+interpretation(State, money):-
+    money(State, M),
+    member(M, [1,2]).
+
+interpretation(State, alive):-
+    alive(State, A),
+    member(A, [1,2]).
+
+interpretation(State, open):-
+    shop(State, 1).

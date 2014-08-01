@@ -25,7 +25,7 @@ action(State-Ag, buy):-
     member(M, [1,2]),
     alive(State, A),
     member(A, [1,2]), % if Ag has insulin, alive must be 2
-    world(State, 1).
+    shop(State, 1).
 
 action(State-Ag, doNothing):-
     agent(Ag),
