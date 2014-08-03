@@ -27,8 +27,9 @@ restriction(State):-
 
 
 % π (interpretation function)
-interpret(Intr, State):-
-    findall(I, interpretation(State, I), Intr).
+interpret(Intr, State-Ag):-
+    agent(Ag),
+    findall(I-Ag, interpretation(State, I), Intr).
 
 interpretation(State, insulin):-
     insulin(State, 1).

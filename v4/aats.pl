@@ -19,21 +19,27 @@ agents(Set):-
     formatOutput.
 
 % Ac (set of actions for each agent)
-% CONFIRM
-actions(Set-Ag):-
+% TO DOUBLE-CHECK
+actions(Set, Ag):-
+    agent(Ag),
     setof(Action, State^(action(State-Ag, Action)), Set),
     formatOutput.
 
-% ρ (action precondition function)
-actionpc(Set, Action):-
-    setof(State, Ag^(action(State-Ag, Action)), Set),
+% JAg (set of joint action)
+% TO DOUBLE-CHECK
+jactions(Set):-
+    findall(Jact-Ag, actions(Jact, Ag), Set),
     formatOutput.
 
-% JAg (set of joint action)
-% CONFIRM
-jaction(Set):-
-    setof(J, (agent(Ag), actions(J-Ag)), Set),
-    formatOutput.
+% ρ (action precondition function)
+actionpc([Action], Ag, Precon):-
+    action(Precon-Ag, Action).
+actionpc(Act, Ag, Precon):-
+    actions(Set, Ag),
+    pick(Act, Set, Rest),
+    action(Precon-Ag, Act),
+    actionpc(Rest, Ag, Precon).
+    
 
 % τ (partial system transition function)
 transient(Init-Ag, Act-->Next-Ag):-
@@ -70,7 +76,3 @@ eval(Status, Init, Fin, Value):-
       (Fin < Init -> Status = -Value);
       (Fin = Init -> Status = @Value) ),
     !.
-
-% '+' meaning a value is promoted
-% '-' meaning a value is demoted
-% '@' meaning neautral with respect of a value
