@@ -31,9 +31,10 @@ action(State-Ag, doNothing):-
     agent(Ag),
     state(State).
 
-% SYSTEM TRANSITION FUNCTION
-% Defines the next-state resulting by performing an action
 
+% τ (ancillary predicates. See aats.pl for function)
+% Defines the next-state resulting by performing an action
+% --------------------------------------------------------
 perform(Init-Ag, Fin, lose):-
     action(Init-Ag, lose),
     Init = [I, M, A, S],

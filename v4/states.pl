@@ -1,9 +1,11 @@
+% state is a vector of properties
 state([I, M, A, W]):-
     member(I, [1, 0]),
     member(M, [2, 1, 0]),
     member(A, [2, 1, 0]),
     member(W, [1, 0]).
 
+% properties can take values
 insulin(State, Val):-
     State = [I, _, _, _],
     I = Val.
@@ -20,6 +22,7 @@ shop(State, Val):-
     State  = [_, _, _, S],
     S = Val.
 
+% not all states are valid.
 restriction(State):-
     state(State),
     (insulin(State, 1) -> alive(State, 2));

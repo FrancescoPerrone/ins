@@ -1,8 +1,5 @@
 % ACTION-BASED ALTERNATING TRANSITION SYSTEM
 
-% Tools for basic list manipulation
-:- include(list_manip).
-
 % Q (set of states)
 states(Set):-
     findall(S, state(S), Set),
@@ -22,7 +19,7 @@ agents(Set):-
 % TO DOUBLE-CHECK
 actions(Set, Ag):-
     agent(Ag),
-    setof(Action, State^(action(State-Ag, Action)), Set),
+    setof(Action-Ag, State^(action(State-Ag, Action)), Set),
     formatOutput.
 
 % JAg (set of joint action)
@@ -42,6 +39,7 @@ actionpc(Act, Ag, Precon):-
     
 
 % τ (partial system transition function)
+% (requires perform definition. see actions.pl)
 transient(Init-Ag, Act-->Next-Ag):-
     perform(Init-Ag, Next, Act),
     world(Next-Ag).
