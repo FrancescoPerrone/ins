@@ -1,5 +1,6 @@
 % file: descr.pl
 % information on the insulin problem
+% this file should be loaded from state or attributes..
 :- module(descr, [insulin/2, alive/2, money/2, shops/2]).
 
 % properties can take values
