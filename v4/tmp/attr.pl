@@ -1,35 +1,27 @@
-:- [list_manip].
-
-% attribute(Val, A)
-% attribute A has Values Val
-
-attribute([1,0]).
-attribute([1,0]).
-attribute([t,f]).
+% file: attr.pl
+:- module(attr, [val/1, attributesl/1, attributes/1]).
 
 
-li(List):-
-    attribute(Values),
-    member(Val, Values).
+% define attributes in the following space
+
+% attribute(D, A)
+% attribute A has domain D
+attribute([1,0], insulin).
+attribute([1,0], money).
+attribute([1,0], alive).
+attribute([1,0], shops).
 
 
+% auxiliar predicates
+% do not change
 
-state1(State):-
-    State = [I,A,M],
-    member(I, [1,0]),
-    member(A, [t, f]),
-    member(M, [2, 1]).
+val(V):-
+    attribute(Domain, _),
+    member(V , Domain).
 
-att(A):-
-    member(A, [1,2]).
-    
+attributesl(N):-
+    findall(E, attribute(_, E), Set),
+    length(Set, N).
 
-
-
-
-
-
-
-%% attributes(Set):-
-%% 	  findall(A, attribute(_, A), Set).
-    
+attributes(Set):-
+    findall(Att, attribute(_, Att), Set).
