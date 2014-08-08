@@ -12,7 +12,7 @@ Francesco (from a paradox)
 * 100% patience
 * 100% coolness
 * 0% friends
-* 0% friendly support
+* 1% friendly support
 * Bench-Capon, A. C. T., & McBurney, P. (2006). Automating
 argumentation for deliberation in cases of conflict of interest. 
 _In Computational Models of Argument: Proceedings of COMMA 2006_ (Vol. 144, p. 279). IOS Press.
