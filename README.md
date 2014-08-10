@@ -13,6 +13,7 @@ Francesco (from a paradox)
 * 100% coolness
 * 0% friends
 * 1% friendly support
-* Bench-Capon, A. C. T., & McBurney, P. (2006). Automating
+* Atkinson, K., & Bench-Capon, T. (2006). Addressing moral problems through practical reasoning. In 'Deontic Logic and Artificial Normative Systems' (pp. 8-23). Springer Berlin Heidelberg.
+* Alison Chorley, Bench-Capon Trevor, & McBurney, P. (2003). Automating
 argumentation for deliberation in cases of conflict of interest. 
-_In Computational Models of Argument: Proceedings of COMMA 2006_ (Vol. 144, p. 279). IOS Press.
+_In 'Computational Models of Argument: Proceedings of COMMA 2006_' (Vol. 144, p. 279). IOS Press.
