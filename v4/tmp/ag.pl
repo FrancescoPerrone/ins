@@ -3,13 +3,13 @@
 
 % Agents
 
-agent(hal).
-agent(carla).
+%% agent(hal).
+%% agent(carla).
 
 % Ag (set of agents)
 
 agents(Set):-
-    setof(Ag, agent(Ag), Set).
+    setof(Ag, (agent(List), member(Ag, List)), Set).
 
 
 % experimenting only.
