@@ -11,11 +11,11 @@ state1(State):-
     member(S, [1,0]). 
 
 state(State):-
-    stateaux(State),
-    pick(Spot, State, _),
-    val(Spot).
+    stateaux(State, 1),
+    pick(Slot, State, _),
+    val(Slot).
 
-stateaux(State):-
+stateaux(State, N):-
     attributesl(N),
     length(State, N).
 

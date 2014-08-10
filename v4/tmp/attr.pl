@@ -7,15 +7,16 @@
 % attribute(D, A)
 % attribute A has domain D
 attribute([1,0], insulin).
-attribute([1,0], money).
-attribute([1,0], alive).
-attribute([1,0], shops).
+%attribute([1,0], money).
+%attribute([1,0], alive).
+%attribute([1,0], shops).
 
 
 % auxiliar predicates
 % do not change
 
 val(V):-
+    attributesl(1),
     attribute(Domain, _),
     member(V , Domain).
 
