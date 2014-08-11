@@ -20,7 +20,7 @@ _In 'Computational Models of Argument: Proceedings of COMMA 2006_'
 (Vol. 144, p. 279). IOS Press.
 
 ###### Notes for me
-```logic
+
 An Action-based Alternating Transition System (AATS) is an (n + 7)-tuple
   S = <hQ, q0, Ag, Ac1, ..., Acn, ρ, τ, φ, πi>
   where:
@@ -46,4 +46,3 @@ that, as this function is partial, not all joint actions are possible in all sta
 is an interpretation function, which gives the set of primitive
 propositions satisfied in each state: if p ∈ π(q), then this means that the
 propositional variable p is satisfied (equivalently, true) in state q.
-```
