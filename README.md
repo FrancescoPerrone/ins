@@ -4,7 +4,8 @@ Can machines show moral intelligence?
 This is what I'm trying understand, and _(maybe)_ I'll let you know if I find any good stuff!
 
 Francesco (from a paradox)
-+FrancescoPerrone
+
+<a href="https://plus.google.com/+FrancescoPerrone" rel="publisher">Visit us on Google+</a>+FrancescoPerrone
 
 ###### Tools
 * SWI Prolog
