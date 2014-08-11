@@ -31,18 +31,62 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>
-<a name="computational-morality" class="anchor" href="#computational-morality"><span class="octicon octicon-link"></span></a>Computational Morality</h3>
+        <h2>
+<a name="moral-philosophy--machine-ethics" class="anchor" href="#moral-philosophy--machine-ethics"><span class="octicon octicon-link"></span></a>Moral Philosophy &amp; Machine Ethics</h2>
 
-<blockquote>
+<p>Can machines show artifactual evidence of moral intelligence?
+What is it that define us as humans?
+Can computer technologies enhance the research methodology in philosophy?</p>
+
+<p>This is what I'm trying understand, and <em>(maybe)</em> I'll let you know if
+I find any good aswer!</p>
+
+<p><a href="https://plus.google.com/+FrancescoPerrone">+FrancescoPerrone</a> (from an azure pubble-like paradox)</p>
+
+<h6>
+<a name="tools" class="anchor" href="#tools"><span class="octicon octicon-link"></span></a>Tools</h6>
+
+<ul>
+<li>SWI Prolog</li>
+<li>emacs24</li>
+<li>Ubuntu 14.4 LTS</li>
+<li>100% patience</li>
+<li>100% coolness</li>
+<li>0% friends</li>
+<li>1% friendly support</li>
+<li>Atkinson, K., &amp; Bench-Capon, T. (2006). Addressing moral problems through practical reasoning. In 'Deontic Logic and Artificial Normative Systems' (pp. 8-23). Springer Berlin Heidelberg.</li>
+<li>Alison Chorley, Bench-Capon Trevor, &amp; McBurney, P. (2003). Automating argumentation for deliberation in cases of conflict of interest. In 'Computational Models of Argument: Proceedings of COMMA 2006' (Vol. 144, p. 279). IOS Press.</li>
+</ul><h6>
+<a name="notes-for-me" class="anchor" href="#notes-for-me"><span class="octicon octicon-link"></span></a>Notes for me</h6>
+
+<p>An Action-based Alternating Transition System (AATS) is an (n +
+7)-tuple:</p>
+
+<pre lang="logic"><code>  S = &lt;hQ, q0, Ag, Ac1, ..., Acn, ρ, τ, φ, πi&gt;    where:
+</code></pre>
+
+<ul>
+<li>Q is a finite, non-empty set of states;</li>
+<li>q0 ∈ Q is the initial state;</li>
+<li>Ag = {1, ..., n} is a finite, non-empty set of agents;</li>
+<li>Aci is a finite, non-empty set of actions, for each i ∈ Ag where Aci∩Acj = ∅
+for all i 6= j ∈ Ag;</li>
+<li>ρ : AcAg → 2Q is an action precondition function, which for each action
+α ∈ AcAg defines the set of states ρ(α) from which α may be executed;</li>
+<li>JAg is the set of Joint Actions such that every j ∈ JAg is a tuple
+hα1, α2, ..., αki where for each αi (i ≤ k) there is some i ∈ Ag such that
+αi ∈ Aci.</li>
+<li>τ : Q x JAg → Q is a partial system transition function, which defines the
+state τ(q, j) that would result by the performance of j from state q - note
+that, as this function is partial, not all joint actions are possible in all states (cf. the precondition function above);</li>
+<li>φ is a finite, non-empty set of atomic propositions; and</li>
+<li>π : Q → 2φ is an interpretation function, which gives the set of primitive
+propositions satisfied in each state: if p ∈ π(q), then this means that the
+propositional variable p is satisfied (equivalently, true) in state q.</li>
+</ul><blockquote>
 <p>Ethics is methodologically infirm because it lacks responsiveness to observation.
 Quine, W.V.O. , Theories and things, Belknap Press, 1981</p>
 </blockquote>
-
-<p>Here, I investigate possible solutions to this problem.
-I'll let you know if I find some good stuff.</p>
-
-<p>F</p>
       </section>
     </div>
 
