@@ -4,7 +4,7 @@ Can machines show artifactual evidence of moral intelligence?
 What is it that define us as humans?
 Can computer technologies enhance the research methodology in philosophy?
  
-This is what I'm trying understand, and *_(maybe)_* I'll let you know if
+This is what I'm trying understand, and _(maybe)_ I'll let you know if
 I find any good aswer!
 
 <a href="https://plus.google.com/+FrancescoPerrone"
@@ -18,15 +18,8 @@ rel="publisher">+FrancescoPerrone</a> (from an azure pubble-like paradox)
 * 100% coolness
 * 0% friends
 * 1% friendly support
-<<<<<<< HEAD
-* Bench-Capon, A. C. T., & McBurney, P. (2006). Automating
-=======
 * Atkinson, K., & Bench-Capon, T. (2006). Addressing moral problems through practical reasoning. In 'Deontic Logic and Artificial Normative Systems' (pp. 8-23). Springer Berlin Heidelberg.
-* Alison Chorley, Bench-Capon Trevor, & McBurney, P. (2003). Automating
->>>>>>> v5
-argumentation for deliberation in cases of conflict of interest. 
-_In 'Computational Models of Argument: Proceedings of COMMA 2006_'
-(Vol. 144, p. 279). IOS Press.
+* Alison Chorley, Bench-Capon Trevor, & McBurney, P. (2003). Automating argumentation for deliberation in cases of conflict of interest. In 'Computational Models of Argument: Proceedings of COMMA 2006' (Vol. 144, p. 279). IOS Press.
 
 ###### Notes for me
 
