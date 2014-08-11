@@ -3,9 +3,8 @@
 Can machines show moral intelligence?
 This is what I'm trying understand, and _(maybe)_ I'll let you know if I find any good stuff!
 
-Francesco (from a paradox)
-
-<a href="https://plus.google.com/+FrancescoPerrone" rel="publisher">+FrancescoPerrone</a>
+<a href="https://plus.google.com/+FrancescoPerrone"
+rel="publisher">+FrancescoPerrone</a> (from an azure pubble-like paradox)
 
 ###### Tools
 * SWI Prolog
