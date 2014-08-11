@@ -1,7 +1,11 @@
 ## Moral Philosophy & Machine Ethics
 
-Can machines show moral intelligence?
-This is what I'm trying understand, and _(maybe)_ I'll let you know if I find any good stuff!
+Can machines show artifactual evidence of moral intelligence?
+What is it that define us as humans?
+Can computer technologies enhance the research methodology in philosophy?
+ 
+This is what I'm trying understand, and *_(maybe)_* I'll let you know if
+I find any good aswer!
 
 <a href="https://plus.google.com/+FrancescoPerrone"
 rel="publisher">+FrancescoPerrone</a> (from an azure pubble-like paradox)
