@@ -1,2 +1,0 @@
-value(life).
-value(freedom).
