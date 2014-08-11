@@ -12,9 +12,8 @@ precondition(buy, [0, 2, 2, 1]).
 precondition(compensate, [1, 1, 1, _]).
 precondition(compensate, [1, 2, 2, _]).
 
+precondition(doNothing, [_,_,_,_]).
 precondition(doNothing, [_, _, 0, _]).
-precondition(doNothing, State):-
-    state(State).
 
 precondition(lose, [1, _, _, _]).
 

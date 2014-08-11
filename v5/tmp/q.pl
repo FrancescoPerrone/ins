@@ -1,14 +1,5 @@
 % file: q.pl
 :- module(q, [state/1, states/1, attribute/3]).
-% q.pl require a language to work.
-% A language should be defined in aats.pl
-
-%% attributes([i,m,a,s]).
-
-%% domain(i,[1,0]).
-%% domain(m, [2,1,0]).
-%% domain(a, [2,1,0]).
-%% domain(s, [1,0]).
 
 % ℚ (set of all possible states)
 

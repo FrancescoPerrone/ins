@@ -9,6 +9,7 @@
 :- use_module(gc).    % ℭ (the grand coalition)
 :- use_module(jag).   % ⅉag joint action
 :- use_module(acpre). % ρ (action precondition function)
+:- use_module(trans). % τ (partial transition function)
 
 % ℒ (the language)
 % -----------------------------------------------------------
