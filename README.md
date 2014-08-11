@@ -5,7 +5,7 @@ This is what I'm trying understand, and _(maybe)_ I'll let you know if I find an
 
 Francesco (from a paradox)
 
-<a href="https://plus.google.com/+FrancescoPerrone" rel="publisher">Visit us on Google+</a>+FrancescoPerrone
+<a href="https://plus.google.com/+FrancescoPerrone" rel="publisher">+FrancescoPerrone</a>
 
 ###### Tools
 * SWI Prolog
