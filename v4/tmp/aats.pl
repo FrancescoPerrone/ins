@@ -5,8 +5,8 @@
 
 :- use_module(q).     % ℚ (the set of valid states)
 :- use_module(qi).    % qi designed initial state ∣ (qi ∈ ℚ)
-:- use_module(ag).    % Ag the set of agents
-:- use_module(ac).    % Ac finite set of action for each agent ∈ Ag
+:- use_module(gc).    % ℭ (the grand coalition)
+% :- use_module(ac).    % Ac finite set of action for each agent ∈ Ag
 :- use_module(jag).   % Jag joint action
 :- use_module(acpre). % ρ (action precondition function)
 
@@ -22,6 +22,10 @@ domain(m, [2,1,0]).
 domain(a, [2,1,0]).
 domain(s, [1,0]).
 
+% Ag (set of agents)
+agent(hal).
+agent(carla).
 
-% set of agents
-agent([hal, carla]).
+% Ac (set of action for each agent ∈ Ag)
+actions(carla, [buy, compensate, doNothing, lose, take]).
+actions(hal, [buy, compensate, doNothing, lose, take]).

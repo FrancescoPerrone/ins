@@ -6,18 +6,23 @@
 %% agent(hal).
 %% agent(carla).
 
-% Ag (set of agents)
+% ℭ (the grand coalition)
+% This predicate when called returns the set of all agents.
+% a coalition C is defined ad C ⊆ ℭ 
 
 agents(Set):-
-    setof(Ag, (agent(List), member(Ag, List)), Set).
+    setof(Ag, agent(Ag), Set).
 
 
 % experimenting only.
-% I want something like:
+% I wanted something like:
 
 % Agents:
 %   hal
 %   carla
+
+% needs refinement
+
 printSet([]):-  nl. 
 printSet([X|L]):-
     write('Agents: '),
