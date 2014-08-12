@@ -11,8 +11,9 @@
 :- use_module(acpre). % ρ (action precondition function)
 :- use_module(trans). % τ (partial transition function)
 
+
+
 % ℒ (the language)
-% -----------------------------------------------------------
 
 % agents
 agent(hal).
@@ -31,6 +32,7 @@ domain(a, [2,1,0]).
 domain(s, [1,0]).
 
 % 𝕢i initial state (must be 𝕢i ∈ ℚ)
+% do we need this?
 initial([0,1,1,0]).
 
 % agent's actions
