@@ -1,6 +1,6 @@
 :- module(trans, [transition/3]).
 % file: trans.pl
-% --------------------------------------------
+% ===========================================
 % This file describes patterns of transitions.
 % The transition described below is one that
 % consider 'one agent acting'.
