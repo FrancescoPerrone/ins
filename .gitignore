@@ -1,10 +1,10 @@
-# gitignore file v1
-
+# ignored folders
+# ---------------
 old/
 extras/report
+temp-*/
 
-# emacs temporary files
+# ignored files
+# --------------
 \#*
-
-# archive files
 *.zip
