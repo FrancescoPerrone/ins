@@ -3,5 +3,5 @@
 old/
 extras/report
 
+# emacs temporary files
 \#*
-.*#

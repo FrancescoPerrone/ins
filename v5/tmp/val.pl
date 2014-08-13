@@ -35,6 +35,9 @@ demote(a, life).
 % Predicates
 % ------------------
 
+eval(Qi, Qf, List):-
+    setof(Eval,(promotion(Qi, Qf, Eval); demotion(Qi, Qf, Eval)),  List).
+
 promotion(Qi, Qf, +Val):-
     state(Qi),  state(Qf),
     promote(At, Val),
@@ -52,7 +55,3 @@ demotion(Qi, Qf, -Val):-
 % transition.
 equal(Val1, Val2):- Val1 = Val2.
 
-
-
-eval(Qi, Qf, List):-
-    setof(Eval,(promotion(Qi, Qf, Eval); demotion(Qi, Qf, Eval)),  List).
