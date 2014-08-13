@@ -1,11 +1,22 @@
+# -*- mode: gitignore; -*-
+
 # ignored folders
 # ---------------
 old/
 extras/report
 tmp-*/
 
-# ignored files
-# --------------
-\#*
+# emacs files
+#---------------
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
 .\#*
+
+# other ignd files
+# ----------------
 *.zip
