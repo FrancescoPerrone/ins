@@ -9,27 +9,26 @@ values([life, freedom, happiness]).
 values(carla, [life, freedom]).
 values(hal, [life, freedom]).
 
+% non transitive
 better(0, 1).
 better(1, 2).
 better(0, 2).
-
+% non transitive
 worse(2, 1).
 worse(1, 0).
 worse(2, 0).
 
-
 affects(i, freedom).
 affects(m, freedom).
 affects(a, life).
-affects(s, freedom).
 
 % Predicates
 % ------------------
 
 eval(Qi, Qf, List):-
     setof(Eval,(promotion(Qi, Qf, Eval); demotion(Qi, Qf, Eval)),  List), !.
-% prevents failure under non-specified/wrong evaluations.
-% needed to make robust the transition system.
+% The following prevents failure under non-specified/wrong evaluations.
+% Needed to make robust the transition system.
 eval(_, _, [none]).
 
 promotion(Qi, Qf, +Val):-

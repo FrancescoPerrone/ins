@@ -13,7 +13,6 @@
 agents(Set):-
     setof(Ag, agent(Ag), Set).
 
-
 % experimenting only.
 % I wanted something like:
 

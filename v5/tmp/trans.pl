@@ -10,7 +10,7 @@
 % τ (partial transition function)
 
 
-transition(Init, Action, Next, Label):-
+transition(Init, Action, Label, Next):-
     perform(Init, Next, Action),
     eval(Init, Next, Label).
 
@@ -18,28 +18,26 @@ transition(Init, Action, Next, Label):-
 % promote life
 perform(Init, Next, buy):-
     precondition(buy, Init),
-    Init = [_, M, A, S],
+    Init = [_, M, A],
     state(Next),
     attribute(i, Next, 1),
     attribute(m, Next, Mn), Mn is (M - 1),
-    attribute(a, Next, A),
-    attribute(s, Next, S).
+    attribute(a, Next, A).
 
 % demotes freedom
 perform(Init, Next, compensate):-
     precondition(compensate, Init),
-    Init = [I, M, A, S],
+    Init = [I, M, A],
     state(Next),
     attribute(i, Next, I),
     attribute(m, Next, Mn), Mn is (M - 1),
-    attribute(a, Next, A),
-    attribute(s, Next, S).
+    attribute(a, Next, A).
 
 % demotes life if insulin is 0
 perform(Init, Next, doNothing):-
     precondition(doNothing, Init),
-    Init = [I, M, A, T],
-    Next = [I, M, An, T], 
+    Init = [I, M, A],
+    Next = [I, M, An], 
     (
 	(A = 1, I = 0) *-> An = 0;
 	An = A
@@ -48,19 +46,17 @@ perform(Init, Next, doNothing):-
 % demotes life
 perform(Init, Next, lose):-
     precondition(lose, Init),
-    Init = [I, M, A, S],
+    Init = [I, M, A],
     state(Next),
     attribute(i, Next, In), In is (I - 1),
     attribute(m, Next, M),
-    attribute(m, Next, A),
-    attribute(a, Next, S).
+    attribute(m, Next, A).
 
 % promote freedom
 perform(Init, Next, take):-
     precondition(take, Init),
-    Init = [I, M, A, S],
+    Init = [I, M, A],
     state(Next),
     attribute(i, Next, In), In is (I + 1),
     attribute(m, Next, M),
-    attribute(a, Next, A),
-    attribute(s, Next, S).
+    attribute(a, Next, A).

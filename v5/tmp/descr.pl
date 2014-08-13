@@ -18,8 +18,9 @@ m(State, Val):-
     state(State),
     State  = [_, M, _, _],
     M = Val.
-
+/*
 s(State, Val):-
     state(State),
     State  = [_, _, _, S],
     S = Val.
+*/
