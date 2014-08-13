@@ -20,7 +20,7 @@ precondition(lose, [1, _, _, _]).
 precondition(take, [0, _, 1, _]).
 precondition(take, [0, _, 2, _]).
 
-% it is not clear if I need to specify all the condition this way
+% it is not clear if I need to specify all the conditions this way
 % or if I can make it more general.
 % In any case, this is something very specific to this scenario
 % and does not make sense to make it general.
