@@ -10,6 +10,7 @@
 :- use_module(jag).   % ⅉag joint action
 :- use_module(acpre). % ρ (action precondition function)
 :- use_module(trans). % τ (partial transition function)
+:- use_module(val). % τ (partial transition function)
 
 
 
