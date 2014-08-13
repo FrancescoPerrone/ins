@@ -5,3 +5,6 @@ extras/report
 
 # emacs temporary files
 \#*
+
+# archive files
+*.zip
