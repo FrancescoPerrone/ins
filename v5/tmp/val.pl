@@ -11,12 +11,12 @@ values(hal, [life, freedom]).
 
 % non transitive
 better(0, 1).
-better(1, 2).
-better(0, 2).
+%better(1, 2).
+%better(0, 2).
 % non transitive
-worse(2, 1).
+%worse(2, 1).
 worse(1, 0).
-worse(2, 0).
+%worse(2, 0).
 
 affects(i, freedom).
 affects(m, freedom).
