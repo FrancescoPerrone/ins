@@ -2,7 +2,7 @@
 # ---------------
 old/
 extras/report
-temp-*/
+tmp-*/
 
 # ignored files
 # --------------
