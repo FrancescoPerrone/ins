@@ -10,8 +10,8 @@
 
 restriction(State):-
     state(State),
-    attribute(i, State, 1),
-    attribute(a, State, 1).
+    (attribute(i, State, 1) -> attribute(a, State, 1));
+    (attribute(i, State, 0) -> attribute(a, State, A), member(A, [1,0])).
 
 
 % The following applies for domains with values other then 1 and 0
@@ -20,6 +20,6 @@ restriction(State):-
 restriction(State):-
     states(Set),
     member(State, Set),
-    (attribute(i, State, 1) -> attribute(a, State, 0));
+    (attribute(i, State, 1) -> attribute(a, State, 2));
     (attribute(i, State, 0) -> attribute(a, State, A), member(A, [1,0])).
 */
