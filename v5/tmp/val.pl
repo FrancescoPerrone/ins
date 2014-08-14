@@ -18,7 +18,8 @@ better(0, 1).
 worse(1, 0).
 %worse(2, 0).
 
-affects(i, life).
+affects(i, freedom).
+%affects(i, life).
 affects(m, freedom).
 affects(a, life).
 

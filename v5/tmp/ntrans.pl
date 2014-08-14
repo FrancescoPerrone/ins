@@ -1,10 +1,11 @@
 % Draft of a new transition system
 :- module(ntrans, [goal/2]).
 
-% the goal state
+% state agents will welcome
 good([1,_,1]).
-% state to avoid
-bad([0,_,0]).  
+% state agents will avoid
+bad([0,1,0]).  
+bad([0,0,0]).  
     
 
 % Actions preconditions (single agent)
