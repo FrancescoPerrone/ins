@@ -27,9 +27,9 @@ coalition([carla, hal]).
 attributes([i,m,a]).
 
 % attribute's domanin
-domain(i,[1,0]).
-domain(m, [2,1,0]).
-domain(a, [2,1,0]).
+domain(i, [1,0]).
+domain(m, [1,0]).
+domain(a, [1,0]).
 
 % 𝕢i initial state (must be 𝕢i ∈ ℚ)
 % do we need this?
