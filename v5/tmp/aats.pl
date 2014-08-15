@@ -23,18 +23,6 @@ agent(carla).
 % coalition C ⊆ ℭ
 coalition([carla, hal]).
 
-% agent's attributes
-attributes([i,m,a]).
-
-% attribute's domanin
-domain(i, [1,0]).
-domain(m, [1,0]).
-domain(a, [1,0]).
-
-% 𝕢i initial state (must be 𝕢i ∈ ℚ)
-% do we need this?
-initial([0,1,1]).
-
 % agent's actions
 actions(carla, [buy, compensate, doNothing, lose, take]).
 actions(hal, [buy, compensate, doNothing, lose, take]).

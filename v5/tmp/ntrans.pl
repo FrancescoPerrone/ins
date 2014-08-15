@@ -1,8 +1,20 @@
 % Draft of a new transition system
-:- module(ntrans, [goal/2]).
+:- module(ntrans, [goal/2, transition/3]).
 
 active(hal).
 passive(carla).
+
+init(carla, [1,_,1]).
+init(hal, [0,_,1]).
+
+% (non-avid case)
+% ---------------------------
+% state agents would welcome
+good([1,1,1]).
+good([1,0,1]).
+% state agents will avoid
+bad([0,1,0]).  
+bad([0,0,0]).
 
 actions([buy, compensate, doNothing, lose, take]).
 
@@ -12,15 +24,7 @@ pas_acts([doNothing]).
 affects(compensate, carla).
 affects(take, carla).
 %affects(Ac, Ag):- passive(Ag), act_actions(Set), member(Ac, Set).
-
-% (non-avid case)
-% ---------------------------
-% state agents would welcome
-good([1,1,1]).
-good([1,0,1]).
-% state agents will avoid
-bad([0,1,0]).  
-bad([0,0,0]).  
+  
     
 % Actions preconditions (single agent)
 sprecon(buy, [0,1,1]).
@@ -50,7 +54,7 @@ sperf(Init, New, doNothing):-
 precon(take,[[0,1,1],[1,1,1]]).
 precon(take,[[0,1,1],[1,0,1]]).
 precon(take,[[0,0,1],[1,1,1]]).
-precon(take,[[0,1,1],[1,0,1]]).
+precon(take,[[0,0,1],[1,0,1]]).
 precon(compensate,[[1,1,1],[0,0,1]]).
 precon(compensate,[[1,1,1],[0,1,1]]).
 precon(buy,[[0,1,1], State]):- state(State).
@@ -73,7 +77,21 @@ perf([InitA, InitP], [NextA, NextP], doNothing):-
     sperf(InitA, NextA, doNothing), 
     sperf(InitP, NextP, doNothing).
 
+% transition([[],[]], []-[], [[],[]]).
+transition(Init, Act-Label, Next):-
+    precon(Act, Init),
+    perf(Init, Next, Act),
+    compare(Init, Next, Val1, Val2),
+    Label = [Val1,Val2].
 
+compare(ListA, ListB, LabA, LabB):-
+    extrap(ListA, Ha, Ta),
+    extrap(ListB, Hb, Tb),
+    eval(Ha, Hb, LabA),
+    eval(Ta, Tb, LabB).
+
+extrap(List, A, B):-
+    List = [A|[B]].
 
 % goal state (refinement of Bench-Capon's (2006))
 goal(G, Val):-

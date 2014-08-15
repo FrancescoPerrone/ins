@@ -1,4 +1,4 @@
-:- module(trans, [transition/4]).
+:- module(trans, [old_transition/4]).
 % file: trans.pl
 %
 % This file describes patterns of transitions.
@@ -10,7 +10,7 @@
 % τ (partial transition function)
 
 
-transition(Init, Action, Label, Next):-
+old_transition(Init, Action, Label, Next):-
     perform(Init, Next, Action),
     eval(Init, Next, Label).
 
