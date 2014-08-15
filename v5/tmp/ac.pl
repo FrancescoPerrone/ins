@@ -1,14 +1,11 @@
 % file: ac.pl
 :- module(ac, [actions/2]).
 
-% here it is not clear wheter this should be a rule of form reported below
-% or a laguage definiton like:
+actions([buy, compensate, doNothing, lose, take]).
 
-% action(hal, [..,..,..])
-
-%% actions(I, [buy, compensate, doNothing, lose, take]):-
-%%     agents(Ag),
-%%     member(I, Ag).
+active_actions([buy, compensate, take, doNothing]).
+passive_actions([doNothing]).
 
 actions(carla, [buy, compensate, doNothing, lose, take]).
 actions(hal, [buy, compensate, doNothing, lose, take]).
+    
