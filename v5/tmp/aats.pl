@@ -3,16 +3,21 @@
 
 % :- use_module(ag, [agents/1]).
 % :- use_module(ac).    % Ac finite set of action for each agent ∈ Ag
-% :- use_module(qi).    % 𝕢i designed initial state ∣ (𝕢i ∈ ℚ)
 
-:- use_module(q).     % ℚ (the set of valid states)
-:- use_module(gc).    % ℭ (the grand coalition)
-:- use_module(jag).   % ⅉag joint action
-:- use_module(acpre). % ρ (action precondition function)
-:- use_module(trans). % τ (partial transition function)
-:- use_module(val). % τ (partial transition function)
-
-
+% ℚ (the set of valid states)
+:- use_module(state).
+% 𝕢 initial state
+:- use_module(initial).
+% ℭ (the grand coalition)
+:- use_module(gc). 
+% ⅉag joint action   
+:- use_module(jag).
+% ρ (action precondition function)
+:- use_module(precon).
+% τ (partial transition function)
+:- use_module(trans).
+% v (values set and evaluation finction)
+:- use_module(values).
 
 % ℒ (the language)
 

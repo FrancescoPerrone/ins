@@ -1,5 +1,5 @@
 % file: q.pl
-:- module(q, [state/1, states/1, attribute/3]).
+:- module(state, [state/1, states/1, attribute/3]).
 
 % agent's attributes
 attributes([i,m,a]).

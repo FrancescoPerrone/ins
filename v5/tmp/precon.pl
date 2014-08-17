@@ -1,5 +1,5 @@
 % file: acpre.pl
-:- module(acpre,[precondition/2]).
+:- module(precon,[precondition/2]).
 
 % ρ (action precondition function)
 

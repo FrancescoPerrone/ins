@@ -1,5 +1,5 @@
 % file: val.pl
-:- module(val, [eval/4]).
+:- module(values, [eval/4]).
 
 % ℒ (the language)
 % ------------------
