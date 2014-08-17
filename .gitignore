@@ -4,6 +4,7 @@
 # ---------------
 old/
 extras/report
+# I use this prefix for temp folders
 tmp-*/
 ~*/
 
@@ -19,6 +20,7 @@ tramp
 .\#*
 
 # gedit temp files
+# ----------------
 *~
 
 # other ignd files
