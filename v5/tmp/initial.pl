@@ -5,8 +5,10 @@
 init(carla, [1,_,1]).
 init(hal, [0,_,1]).
 
-% gives all possible initial states
-% of a particular scenario:
+% Give all initial states for a 
+% coalition in a particula scenario
+% determined by init/2 above.
+
 % cstate([A, B]), A = [0,_,1], B = [1,_,1].
 initial(Init):-
     cstate([A, B]), 
@@ -14,7 +16,8 @@ initial(Init):-
     init(carla, B), 
     Init = [A, B].
 
-% Colition's state
+% Create the superset of all possible states for the 
+% coalition.
 cstate([StateA, StateP]):-
     state(StateA),
     state(StateP).
