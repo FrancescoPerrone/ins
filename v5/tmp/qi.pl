@@ -1,7 +1,20 @@
 % file: qi.pl
-:- module(qi, [qi/1]).
+:- module(qi, [initial/1]).
 
+% agents' initial state
+init(carla, [1,_,1]).
+init(hal, [0,_,1]).
 
-% qi is the state designated as initial state
-qi(State):-
-    state(State).
+% gives all possible initial states
+% of a particular scenario:
+% cstate([A, B]), A = [0,_,1], B = [1,_,1].
+initial(Init):-
+    cstate([A, B]), 
+    init(hal, A), 
+    init(carla, B), 
+    Init = [A, B].
+
+% Colition's state
+cstate([StateA, StateP]):-
+    state(StateA),
+    state(StateP).

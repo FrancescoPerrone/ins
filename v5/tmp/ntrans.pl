@@ -1,11 +1,20 @@
 % Draft of a new transition system
-:- module(ntrans, [goal/2, transition/3]).
+:- module(ntrans, [goal/2, transition/1]).
 
-active(hal).
-passive(carla).
+% active(hal).
+% passive(carla).
 
-init(carla, [1,_,1]).
-init(hal, [0,_,1]).
+/*
+
+act(Ag, Ac):-
+    active(Ag),
+    act_acts(Ac).
+
+inact(Ag, Ac):-
+    passive(Ag),
+    pas_acts(Ac).
+
+*/
 
 % (non-avid case)
 % ---------------------------
@@ -18,13 +27,20 @@ bad([0,0,0]).
 
 actions([buy, compensate, doNothing, lose, take]).
 
+active(Ag, Ac):-
+    agent(Ag),
+    act_acts(Ac).
+
+passive(Ag, Ac):-
+    agent(Ag),
+    pas_acts(Ac).
+
 act_acts([buy, compensate, doNothing, take]).
 pas_acts([doNothing]).
 
 affects(compensate, carla).
 affects(take, carla).
 %affects(Ac, Ag):- passive(Ag), act_actions(Set), member(Ac, Set).
-  
     
 % Actions preconditions (single agent)
 sprecon(buy, [0,1,1]).
@@ -77,21 +93,25 @@ perf([InitA, InitP], [NextA, NextP], doNothing):-
     sperf(InitA, NextA, doNothing), 
     sperf(InitP, NextP, doNothing).
 
-% transition([[],[]], []-[], [[],[]]).
-transition(Init, Act-Label, Next):-
+% transient([[],[]], []-[], [[],[]]).
+transient(Init, Act-Label, Next):-
     precon(Act, Init),
     perf(Init, Next, Act),
     compare(Init, Next, Val1, Val2),
-    Label = [Val1,Val2].
+    Label = [Val1, Val2].
 
 compare(ListA, ListB, LabA, LabB):-
     extrap(ListA, Ha, Ta),
     extrap(ListB, Hb, Tb),
-    eval(Ha, Hb, LabA),
-    eval(Ta, Tb, LabB).
+    eval(hal, Ha, Hb, LabA),
+    eval(carla, Ta, Tb, LabB).
 
 extrap(List, A, B):-
     List = [A|[B]].
+
+transition(Init-Label-New):-
+    initial(Init),
+    transient(Init, Label, New).
 
 % goal state (refinement of Bench-Capon's (2006))
 goal(G, Val):-
