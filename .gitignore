@@ -5,6 +5,7 @@
 old/
 extras/report
 tmp-*/
+~*/
 
 # emacs files
 #---------------
@@ -16,6 +17,9 @@ tmp-*/
 auto-save-list
 tramp
 .\#*
+
+# gedit temp files
+*~
 
 # other ignd files
 # ----------------
