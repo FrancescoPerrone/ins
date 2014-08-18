@@ -1,21 +1,19 @@
 % file: aats.pl
 % Action-based alternating transition system
 
-% Ac (set of actions)
-%:- use_module(APaction).
+% Please consult one of the following:
+
+% ac1.pl (action system with no active/passive, disti.)
+% ac2.pl (action system with active/passive distiction)
+
+
 % Ag (set of agents)
 :- use_module(agents).
 % ℚ (the set of valid states)
 :- use_module(state).
-% 𝕢 initial state
-:- use_module(initial).
-% ℭ (the grand coalition)
-:- use_module(gc). 
-% ⅉag joint action   
-% :- use_module(jag).
-% ρ (action precondition function)
-:- use_module(precon).
+% 𝕢 initial state file
+:- use_module(inits).
 % τ (partial transition function)
-%:- use_module(trans).
+:- use_module(trans).
 % v (values set and evaluation finction)
 :- use_module(values).

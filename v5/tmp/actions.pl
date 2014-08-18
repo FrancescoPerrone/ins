@@ -1,32 +1,21 @@
 :- module(actions, [actions/1, status/3, precon/2, perf/3]).
-%actions([buy, compensate, doNothing, lose, take]).
 
-% actions can be active/passive
-ac(active, [buy, compensate, doNothing, take]).
-ac(passive, [doNothing, buy]).
-% however, 'lose' does not have a classification
-ac(super, [lose]).
+actions(hal, [buy, compensate, doNothing, lose, take]).
+actions(carla, [buy, compensate, doNothing, lose, take]).
 
-% agent can be active/passive
-% according to their status they can parform actions
-status(hal, active).
-status(carla, passive).
-
-actions(Ag, Actions):-
-    agent(Ag),
-    can_perf(Ag, Actions).
-
-can_perf(Ag, Actions):-
-    status(Ag, Status),
-    ac(Status, Actions).
+% joint actions for the scenarion were hal has lost his isnsulin
+jaction([ [doNothing-hal, doNothing-carla], 
+	  [take-hal, doNothing-carla],
+	  [doNothing-hal, buy-carla],
+	  [compensate-hal, doNothing-carla] ]).
 
 
 % Single agent's action performance
-sperf([0,1,1], [1,0,1], buy).
-sperf([1,1,1], [1,0,1], compensate).
-sperf([1,M,A], [0,M,A], lose).
-sperf([0,M,1], [1,M,1], take).
-sperf(Init, New, doNothing):-
+perf([0,1,1], [1,0,1], buy).
+perf([1,1,1], [1,0,1], compensate).
+perf([1,M,A], [0,M,A], lose).
+perf([0,M,1], [1,M,1], take).
+perf(Init, New, doNothing):-
     precon_aux(doNothing, Init),
     state(Init), state(New),
     Init = [I, M, A],  New = [I, M, An], 
@@ -62,18 +51,3 @@ perf([[1,0,1],[State]], [[0,0,1],[State]], lose):- state(State).
 perf([InitA, InitP], [NextA, NextP], doNothing):- 
     sperf(InitA, NextA, doNothing), 
     sperf(InitP, NextP, doNothing).
-
-actions(Set):-
-    ac_actions(AcSet),
-    in_actions(InSet),
-    other_ac(Oth),
-    setof(Ac, (member(Ac, AcSet); member(Ac, InSet); member(Ac, Oth)), Set).
-
-% the status of an agent is given by the set of action
-% the agent can perform
-
-% Parameters
-% Ag: an agent
-% Ac: a set of action
-% Status: active, passive or super
-

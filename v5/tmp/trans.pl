@@ -1,6 +1,5 @@
 % Draft of a new transition system
-:- module(trans, [goal/2, transition/1]).
-
+:- module(trans, [goal/2, transient/4]).
 
 % NOTE: initial states are defined in initial.pl
 
@@ -11,14 +10,17 @@ good([1,0,1]).
 % states agents should avoid
 bad([0,1,0]).  
 bad([0,0,0]).
-    
-% transient([[],[]], []-[], [[],[]]).
-transient(Init, Act-Label, Next):-
-    precon(Act, Init),
-    perf(Init, Next, Act),
-    compare(Init, Next, Val1, Val2),
-    Label = [Val1, Val2].
 
+
+% acsystem-based transition
+transient(Init, Ac, Label, New):-
+    precon(Ac, Init),
+    perf(Init, New, Ac),
+    compare(Init, New, ValH, ValC),
+    Label = [ValH,ValC].
+
+% perform a comparison between subsequent states
+% from the standpoint of carla and hal set of values.
 compare(ListA, ListB, LabA, LabB):-
     extrap(ListA, Ha, Ta),
     extrap(ListB, Hb, Tb),
@@ -27,10 +29,6 @@ compare(ListA, ListB, LabA, LabB):-
 
 extrap(List, A, B):-
     List = [A|[B]].
-
-transition(Init-Label-New):-
-    initial(Init),
-    transient(Init, Label, New).
 
 % goal state (refinement of Bench-Capon's (2006))
 goal(G, Val):-

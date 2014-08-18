@@ -1,4 +1,5 @@
-:-module(actionap, [status/2]).
+
+:-module(actionap, [status/2, ac_set/2, precon/2, perf/3]).
 
 % meaning that an agent is an a particula status).
 status(hal, active).
@@ -13,14 +14,13 @@ ac_set(Ag, Ac):-
     status(Ag, Status),
     actions(Status, Ac).
 
-% action preconditions
+% action preconditions - the first part of a transition
 
 precon(take-A, [Active-A, Passive-P]):-
     coalition(C),
     member(A, C), status(A, active),
     member(P, C), status(P, passive),
     Active = [0,_,1],
-    init(P, Passive),
     Passive = [1,_,1].
 
 precon(compensate-A, [Active-A, Passive-P]):-
@@ -28,17 +28,16 @@ precon(compensate-A, [Active-A, Passive-P]):-
     member(A, C), status(A, active),
     member(P, C), status(P, passive),
     Active = [1,1,1],
-    init(P, Passive),
-    Passive = [_,_,1].
+    Passive = [1,_,1].
 
-precon(buy-A, [[0,1,1]-A, []]):-
-    agent(A).
+precon(buy-A, [[0,1,1]-A]):-
+    status(A, _).
 
-precon(doNothing-A, [State-A, []]):-
-    agent(A),
+precon(doNothing-A, [State-A]):-
+    status(A, _),
     state(State).
 
-% perform action
+% action postconditions - the last part of a transition
 
 perf([Active, Passive], [NewAct, NewPas], take):-
     Active =  [0,M,1],
@@ -48,15 +47,15 @@ perf([Active, Passive], [NewAct, NewPas], take):-
 
 perf([Active, Passive], [NewAct, NewPas], compensate):-
     Active =  [1,1,1],
-    Passive = [_,_,1],
+    Passive = [1,_,1],
     NewAct =  [1,0,1],
-    NewPas =  [_,1,1].
+    NewPas =  [1,1,1].
 
-perf([Init, []], [New, []], buy):-
+perf(Init, New, buy):-
     Init = [0,1,1],
     New =  [1,0,1].
 
-perf([Init, []], [New, []], doNothing):-
+perf(Init, New, doNothing):-
     state(Init), state(New),
     Init = [I, M, A],  New = [I, M, An], 
     (
