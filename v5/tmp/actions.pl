@@ -1,32 +1,25 @@
-:- module(actions, [actions/1, status/3, precon/2, perf/3, preconEx/3]).
+:- module(actions, [actions/1, status/3, precon/2, perf/3]).
 %actions([buy, compensate, doNothing, lose, take]).
 
-% the set of active actions
-ac_actions([buy, compensate, doNothing, take]).
+% actions can be active/passive
+ac(active, [buy, compensate, doNothing, take]).
+ac(passive, [doNothing, buy]).
+% however, 'lose' does not have a classification
+ac(super, [lose]).
 
-% the set of inactive actions
-in_actions([doNothing]).
+% agent can be active/passive
+% according to their status they can parform actions
+status(hal, active).
+status(carla, passive).
 
-% action 'lose' has an undefined status
-% it is neither active, nor passive...
-other_ac([lose]).
+actions(Ag, Actions):-
+    agent(Ag),
+    can_perf(Ag, Actions).
 
-% Actions preconditions
-preconEx(Ac-Ag, Status, State-Ag):-
-    status(Ag, X, Status),
-    member(Ac, X),
-    precon_aux(Ac, State).
-    
+can_perf(Ag, Actions):-
+    status(Ag, Status),
+    ac(Status, Actions).
 
-% action precondition's auxiliary predicate
-precon_aux(buy, [0,1,1]).
-precon_aux(compensate,[1,1,1]).
-precon_aux(lose, [1,0,1]).
-precon_aux(lose, [1,1,1]).
-precon_aux(take, [0,1,1]).
-precon_aux(take, [0,0,1]).
-precon_aux(doNothing, State):- 
-    state(State).
 
 % Single agent's action performance
 sperf([0,1,1], [1,0,1], buy).
@@ -84,14 +77,3 @@ actions(Set):-
 % Ac: a set of action
 % Status: active, passive or super
 
-status(Ag, Ac, active):-
-    agent(Ag),
-    ac_actions(Ac).
-
-status(Ag, Ac, passive):-
-    agent(Ag),
-    in_actions(Ac).
-
-status(Ag, Ac, super):-
-    agent(Ag),
-    actions(Ac).

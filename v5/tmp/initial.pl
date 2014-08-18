@@ -1,5 +1,5 @@
 % file: qi.pl
-:- module(initial, [initial/1]).
+:- module(initial, [initial/1, init/2]).
 
 % agents' initial state
 init(carla, [1,_,1]).

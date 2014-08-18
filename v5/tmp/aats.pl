@@ -2,7 +2,7 @@
 % Action-based alternating transition system
 
 % Ac (set of actions)
-:- use_module(actions).
+%:- use_module(APaction).
 % Ag (set of agents)
 :- use_module(agents).
 % ℚ (the set of valid states)
@@ -16,6 +16,6 @@
 % ρ (action precondition function)
 :- use_module(precon).
 % τ (partial transition function)
-:- use_module(trans).
+%:- use_module(trans).
 % v (values set and evaluation finction)
 :- use_module(values).
