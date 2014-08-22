@@ -1,4 +1,5 @@
 :- module(trans,[trans/4, trans_label/5]).
+:- use_module(library(pldoc)).
 
 /** <module> Transition system
 

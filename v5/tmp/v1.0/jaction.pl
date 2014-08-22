@@ -1,19 +1,17 @@
 :- module(jaction, [precon/2, perfor/3]).
+:- use_module(library(pldoc)).
 
-%% <module> Action precondition and partial transition function
-% This file provides actions, and their precondition/transition
-% functions.
-%
-% Actions:
-% * buy:  meaning that agent buys insulin supply
-% * comp: compensate with insulin or money
-% * doNo: meaning agent does not act
-% * take: meaning that agent takes another agent's insulin
-% * lose: meanign that an agent loses his/er insulin
-% 
-% precon/2 is the precondition function
-% perfor/3 is the partial transition function
-%
+/** <module> Action precondition and partial transition function
+
+This file provides actions, and their precondition/transition
+functions.
+
+@author Francesco Perrone
+@license GNU
+
+@tbd precon/2
+@tbd perform/3
+*/
 
 %% precon(?Action, ?State:state) is semidet
 %
@@ -55,7 +53,6 @@ precon([takeH,loseC], [0,_,1,1,_,1]).
 %  @arg Jac joint action
 
 /*
-
 perform([0,1,1,I,A,M], [1,0,1,1,0,1], [buyH,compC]).
 perform([0,1,1,0,M,1], [1,0,1,0,M,0], [buyH,doNoC]).
 perform([0,1,1,1,M,1], [1,0,1,1,M,1], [buyH,doNoC]).
