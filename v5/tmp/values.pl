@@ -12,7 +12,7 @@ better(0, 1).
 % non transitive
 worse(1, 0).
 
-affects(i, freedom).
+affects(i, life).
 affects(m, freedom).
 affects(a, life).
 
