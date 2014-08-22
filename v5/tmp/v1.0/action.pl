@@ -1,6 +1,6 @@
 :- module(act, [precond/2, perform/3]).
 :- use_module(library(pldoc)).
-%:- doc_save(., [recursive(true)]).
+:- doc_save(., [recursive(true)]).
 
 /** <module> Action precondition and partial transition function
 

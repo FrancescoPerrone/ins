@@ -1,4 +1,5 @@
 :- module(val, [better/3, eval/3, promote/3, demote/3]).
+:- use_module(library(pldoc)).
 
 /** <module> Values and evaluation function
 
@@ -86,7 +87,7 @@ promote(Ini, Fin, +V):-
 %
 %  @arg Ini the initial state
 %  @arg Fin the new state
-%  @arg V indicates that V is promoted
+%  @arg V indicates that V is demoted
 
 demote(Ini, Fin, -V):-
     subsc(Set, hal),
