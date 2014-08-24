@@ -22,7 +22,7 @@ transition between two states.
 %
 %  @arg Values a set of social attitudes/interests
 %  @arg Agent agent's name.
-
+%
 subsc([lifeH, lifeC, freedomH, freedomC], hal).
 
 %% better(-A:state, -B:state, ?Val) is det
@@ -36,13 +36,11 @@ subsc([lifeH, lifeC, freedomH, freedomC], hal).
 %  @arg B a state
 %  @arg Val a value
 %
-
+%
 better([0,_,_,_,_,_], [1,_,_,_,_,_], lifeH).
 better([_,0,_,_,_,_], [_,1,_,_,_,_], freedomH).
-better([_,_,0,_,_,_], [_,_,1,_,_,_], lifeH).
 better([_,_,_,0,_,_], [_,_,_,1,_,_], lifeC).
 better([_,_,_,_,0,_], [_,_,_,_,1,_], freedomC).
-better([_,_,_,_,_,0], [_,_,_,_,_,1], lifeC).
 
 %% worse(-A:state, -B:state, ?Val) is det
 %  Defines the value's status 'worse'
@@ -55,7 +53,7 @@ better([_,_,_,_,_,0], [_,_,_,_,_,1], lifeC).
 %  @arg B a state
 %  @arg Val a value
 %
-
+%
 worse([1,_,_,_,_,_], [0,_,_,_,_,_], lifeH).
 worse([_,1,_,_,_,_], [_,0,_,_,_,_], freedomH).
 worse([_,_,1,_,_,_], [_,_,0,_,_,_], lifeH).
@@ -73,7 +71,7 @@ worse([_,_,_,_,_,1], [_,_,_,_,_,0], lifeC).
 %  @arg Ini the initial state
 %  @arg Fin the new state
 %  @arg V indicates that V is promoted
-
+%
 promote(Ini, Fin, +V):-
     subsc(Set, hal),
     member(V, Set),
@@ -88,7 +86,7 @@ promote(Ini, Fin, +V):-
 %  @arg Ini the initial state
 %  @arg Fin the new state
 %  @arg V indicates that V is demoted
-
+%
 demote(Ini, Fin, -V):-
     subsc(Set, hal),
     member(V, Set),
@@ -108,7 +106,7 @@ demote(Ini, Fin, -V):-
 %  @see promote/3 a status
 %  @see demote/3  a status
 %
-
+%
 eval(Ini, Fin, L):-
     setof(V, 
 	  (promote(Ini, Fin, V); demote(Ini, Fin, V)),

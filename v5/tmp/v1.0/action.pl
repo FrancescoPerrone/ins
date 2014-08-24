@@ -1,59 +1,51 @@
-:- module(act, [precond/2, perform/3]).
+:- module(act, [perform/3]).
 :- use_module(library(pldoc)).
-:- doc_save(., [recursive(true)]).
+%:- doc_save(., [recursive(true)]).
 
-/** <module> Action precondition and partial transition function
+/** <module> Actions and action pre/post conditions.
 
-This file provides definitions for actions, action's precondition
-and partial transition function.
+This file gives a semantics for actions and actions'
+pre/post conditions.
 
-@see precond/2 the precondition function
-@see perform/3 the partial transition function
-
-e.g.
 ==
-?- precon(buy, State).
-State = [0, 1, 1, _G2090, _G2093, _G2096].
+perform(precondition, postcondition, action)
+e.g.:
 
-?- perfor(Ini, Fin, buy).
-Ini = [0, 1, 1, _G2104, _G2107, _G2110],
-Fin = [1, 0, 1, _G2104, _G2107, _G2110].
-true.
+?- perform(Init, Fin, buyH).
+Init = [0, 1, 1, _G2063, _G2066, _G2069],
+Fin = [1, 0, 1, _G2063, _G2066, _G2069].
 ==
-
 
 @author Francesco Perrone
 @license GNU
 */
 
-%% precond(?Action, ?State:state) is semidet
-%
-%  Action's precondition function.
-%  Meaning that 'Action' can be performed from 'State'.
-%
-%  @arg Action an action's name (ground)
-%  @arg State a action's precondition state
 
-precond(buy,  [0,1,1,_,_,_]).
-precond(comp, [1,1,1,1,1,1]).
-precond(comp, [1,1,1,1,0,1]).
-precond(doNo, [_,_,_,_,_,_]).
-precond(lose, [1,_,1,_,_,_]).
-precond(take, [0,_,1,_,_,_]).
-
-%% perform(?Ini:state, ?New:state, ?Action) is semidet
+%% perform(?Pre:state, ?Pos:state, ?Act:ground) is semidet
 %
-%  Partial transition function.
-%  'New' is the state tha would result by performing 'Action' from 'Ini'. 
+%  Actions and actions' pre/post conditions.
+%  Meaning that from Pre, Pos is the state resulting by
+%  performing Action.
 %
-%  @arg Ini an initial state.
-%  @arg New a valid new state.
-%  @arg Action action name (ground).
+%  @arg Ini Action's precondition
+%  @arg New Action post-condition.
+%  @arg Action Action's name.
+%
+perform([0,1,1,I,M,A], [1,0,1,I,M,A], buyH).
+perform([1,1,1,0,M,1], [1,0,1,1,M,1], compH). 
+perform([1,1,1,1,_,1], [1,0,1,1,1,1], compH).
+perform([0,D,1,1,M,1], [1,D,1,0,M,1], takeH).
+perform([1,D,1,I,M,A], [0,D,1,I,M,A], loseH).
+perform([1,D,1,I,M,A], [1,D,1,I,M,A], doNoH).
+perform([C,D,0,I,M,A], [C,D,0,I,M,A], doNoH).
+perform([0,D,1,I,M,A], [0,D,0,I,M,A], doNoH).
 
-perform([0,1,1, Ic,Mc,Ac], [1,0,1, Ic,Mc,Ac], buy).
-perform([1,1,1, 1,1,1], [1,0,1, 1,1,1], comp).
-perform([1,1,1, 1,0,1], [1,0,1, 1,1,1], comp).
-perform([1,Mh,1, Ic,Mc,Ac], [0,Mh,1, Ic,Mc,Ac], lose).
-perform([0,Mh,1, 1,Mc,Ac], [1,Mh,1, 0,Mc,Ac], take).
-perform([0,Mh,1, Ic,Mc,Ac], [0,Mh,0, Ic,Mc,Ac], doN).
-perform([Ah,Mh,Ia, Ac,Mc,Ic], [Ah,Mh,Ia, Ac,Mc,Ic], doNo).
+
+
+% NOTICE: 
+%
+% 1. Only an agent with money and insulin, might compAg
+% 2. compH means: Hal buys Carla insulin, or gives her money if she's insulin
+% 3. In any situation an agent might doNo
+% 4. If an agent if dead can only doNo
+% 5. An agent dies for lack of insulin, if it doNo   
