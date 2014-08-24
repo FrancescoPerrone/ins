@@ -7,6 +7,18 @@ This file defines Hal's set of values
 and provides predicates for evaluating the status of a
 value in the agent's set, after a transition.
 
+e.g.
+
+==
+?- eval([0,1,1,1,1,1],[1,0,1,1,1,1], E).
+E = [+lifeH, -freedomH].
+true.
+
+?- eval([0,0,1,1,1,1],[1,0,1,0,1,1], E).
+E = [+lifeH, -lifeC].
+true.
+==
+
 @author Francesco Perrone
 @license GNU
 
@@ -108,4 +120,4 @@ demote(Ini, Fin, -V):-
 eval(Ini, Fin, Eval):-
     setof(V, 
 	  (promote(Ini, Fin, V); demote(Ini, Fin, V)),
-	  L).
+	  Eval).
