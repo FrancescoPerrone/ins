@@ -1,12 +1,11 @@
 :- module(val, [better/3, eval/3, promote/3, demote/3]).
 :- use_module(library(pldoc)).
 
-/** <module> Values and evaluation function
+/** <module> Values and evaluation functions
 
-This file provides defintion for Hal's set of values
-and also provides an evalution function which defines
-the status of a value abscribed by Hal to the
-transition between two states.
+This file defines Hal's set of values
+and provides predicates for evaluating the status of a
+value in the agent's set, after a transition.
 
 @author Francesco Perrone
 @license GNU
@@ -15,7 +14,7 @@ transition between two states.
 
 */
 
-%% subsc(-Values:list, ?Agent) is det
+%% subsc(-Values:list, -Agent) is det
 %  
 %  Agent's set of values.
 %  It means that 'Agent' subscribes these 'Values'.
@@ -25,7 +24,7 @@ transition between two states.
 %
 subsc([lifeH, lifeC, freedomH, freedomC], hal).
 
-%% better(-A:state, -B:state, ?Val) is det
+%% better(?A:state, ?B:state, ?Val) is semidet
 %  Defines the value's status 'better'
 %  
 %  It means that in state state 'B' the status
@@ -36,13 +35,14 @@ subsc([lifeH, lifeC, freedomH, freedomC], hal).
 %  @arg B a state
 %  @arg Val a value
 %
-%
 better([0,_,_,_,_,_], [1,_,_,_,_,_], lifeH).
-better([_,0,_,_,_,_], [_,1,_,_,_,_], freedomH).
+better([_,_,0,_,_,_], [_,_,1,_,_,_], lifeH).
 better([_,_,_,0,_,_], [_,_,_,1,_,_], lifeC).
+better([_,_,_,_,_,0], [_,_,_,_,_,1], lifeC).
+better([_,0,_,_,_,_], [_,1,_,_,_,_], freedomH).
 better([_,_,_,_,0,_], [_,_,_,_,1,_], freedomC).
 
-%% worse(-A:state, -B:state, ?Val) is det
+%% better(?A:state, ?B:state, ?Val) is semidet
 %  Defines the value's status 'worse'
 %  
 %  It means that in state state 'B' the status
@@ -53,18 +53,16 @@ better([_,_,_,_,0,_], [_,_,_,_,1,_], freedomC).
 %  @arg B a state
 %  @arg Val a value
 %
-%
 worse([1,_,_,_,_,_], [0,_,_,_,_,_], lifeH).
-worse([_,1,_,_,_,_], [_,0,_,_,_,_], freedomH).
 worse([_,_,1,_,_,_], [_,_,0,_,_,_], lifeH).
 worse([_,_,_,1,_,_], [_,_,_,0,_,_], lifeC).
-worse([_,_,_,_,1,_], [_,_,_,_,0,_], freedomC).
 worse([_,_,_,_,_,1], [_,_,_,_,_,0], lifeC).
-
+worse([_,1,_,_,_,_], [_,0,_,_,_,_], freedomH).
+worse([_,_,_,_,1,_], [_,_,_,_,0,_], freedomC).
 
 %% promote(?Ini, ?Fin, ?V)
 %
-%  Promotion function
+%  Promotion definition
 %  Defines what it takes for a value to be
 %  promoted in a transition.
 %
@@ -73,8 +71,8 @@ worse([_,_,_,_,_,1], [_,_,_,_,_,0], lifeC).
 %  @arg V indicates that V is promoted
 %
 promote(Ini, Fin, +V):-
-    subsc(Set, hal),
-    member(V, Set),
+    subsc(Vset, hal),
+    member(V, Vset),
     better(Ini, Fin, V).
 
 %% demote(?Ini:state, ?Fin:state, ?V:value)
@@ -88,13 +86,13 @@ promote(Ini, Fin, +V):-
 %  @arg V indicates that V is demoted
 %
 demote(Ini, Fin, -V):-
-    subsc(Set, hal),
-    member(V, Set),
+    subsc(Vset, hal),
+    member(V, Vset),
     worse(Ini, Fin, V).
 
-%% eval(?Ini:state, ?Fin:state, -L:list)
+%% eval(?Ini:state, ?Fin:state, -Eval:list)
 %
-%  Evaluation set.
+%  Evaluation function.
 %  Create a set containing an evaluation
 %  of what has been promoted/demoted
 %  in a transition, under Hal's point
@@ -102,12 +100,12 @@ demote(Ini, Fin, -V):-
 %
 %  @arg Ini an initial state
 %  @arg Fin a new state
-%  @arg L a list of value's status
+%  @arg Eval a list of value's status
+%
 %  @see promote/3 a status
 %  @see demote/3  a status
 %
-%
-eval(Ini, Fin, L):-
+eval(Ini, Fin, Eval):-
     setof(V, 
 	  (promote(Ini, Fin, V); demote(Ini, Fin, V)),
 	  L).
