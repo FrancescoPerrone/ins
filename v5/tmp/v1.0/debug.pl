@@ -26,6 +26,6 @@ This is just a temporary file...
 :- use_module(action). 
 :- use_module(state).
 :- use_module(trans).
-:- use_module(val).
+:- use_module(value).
 
 %:- use_module(jaction).  

@@ -41,7 +41,6 @@ perform([C,D,0,I,M,A], [C,D,0,I,M,A], doNoH).
 perform([0,D,1,I,M,A], [0,D,0,I,M,A], doNoH).
 
 
-
 % NOTICE: 
 %
 % 1. Only an agent with money and insulin, might compAg
