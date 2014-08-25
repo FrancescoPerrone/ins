@@ -1,4 +1,4 @@
-:- module(act, [perform/3]).
+:- module(act, [perform/3, precon/2]).
 :- use_module(library(pldoc)).
 %:- doc_save(., [recursive(true)]).
 
@@ -40,6 +40,14 @@ perform([1,D,1,I,M,A], [1,D,1,I,M,A], doNoH).
 perform([C,D,0,I,M,A], [C,D,0,I,M,A], doNoH).
 perform([0,D,1,I,M,A], [0,D,0,I,M,A], doNoH).
 
+
+precon([0,1,1,_,_,_], buyH).
+precon([1,1,1,1,_,1], compH).
+precon([0,_,1,1,_,_], takeH).
+precon([1,_,1,_,_,_], loseH).
+precon([1,_,1,_,_,_], doNoH).
+precon([_,_,0,_,_,_], doNoH).
+precon([1,_,0,_,_,_], doNoH).
 
 % NOTICE: 
 %

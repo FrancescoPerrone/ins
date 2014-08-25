@@ -1,4 +1,4 @@
-:- module(val, [better/3, eval/3, promote/3, demote/3]).
+:- module(val, [eval/3, promote/3, demote/3, neutral/3]).
 :- use_module(library(pldoc)).
 
 /** <module> Values and evaluation functions
@@ -72,6 +72,13 @@ worse([_,_,_,_,_,1], [_,_,_,_,_,0], lifeC).
 worse([_,1,_,_,_,_], [_,0,_,_,_,_], freedomH).
 worse([_,_,_,_,1,_], [_,_,_,_,0,_], freedomC).
 
+same([I,_,_,_,_,_], [I,_,_,_,_,_], lifeH).
+same([_,_,A,_,_,_], [_,_,A,_,_,_], lifeH).
+same([_,_,_,I,_,_], [_,_,_,I,_,_], lifeC).
+same([_,_,_,_,_,A], [_,_,_,_,_,A], lifeC).
+same([_,M,_,_,_,_], [_,M,_,_,_,_], freedomH).
+same([_,_,_,_,M,_], [_,_,_,_,M,_], freedomC).
+
 %% promote(?Ini, ?Fin, ?V)
 %
 %  Promotion definition
@@ -85,6 +92,7 @@ worse([_,_,_,_,1,_], [_,_,_,_,0,_], freedomC).
 promote(Ini, Fin, +V):-
     subsc(Vset, hal),
     member(V, Vset),
+    state(Ini), state(Fin),
     better(Ini, Fin, V).
 
 %% demote(?Ini:state, ?Fin:state, ?V:value)
@@ -100,7 +108,15 @@ promote(Ini, Fin, +V):-
 demote(Ini, Fin, -V):-
     subsc(Vset, hal),
     member(V, Vset),
+    state(Ini), state(Fin),
     worse(Ini, Fin, V).
+
+
+neutral(Ini, Fin, n-V):-
+    subsc(Vset, hal),
+    member(V, Vset),
+    state(Ini), state(Fin),
+    same(Ini, Fin, V).
 
 %% eval(?Ini:state, ?Fin:state, -Eval:list)
 %
@@ -119,5 +135,6 @@ demote(Ini, Fin, -V):-
 %
 eval(Ini, Fin, Eval):-
     setof(V, 
-	  (promote(Ini, Fin, V); demote(Ini, Fin, V)),
-	  Eval).
+	  (promote(Ini, Fin, V); demote(Ini, Fin, V); neutral(Ini, Fin, V)),
+	  Eval), !.
+eval(_, _, ['status not defined for this transition']).

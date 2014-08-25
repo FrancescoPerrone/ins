@@ -1,4 +1,4 @@
-:- module(state, [init/1, state/1, attributes/1]).
+:- module(state, [state/1, attributes/1]).
 :- use_module(library(pldoc)).
 
 /** <module> Agent's State representation and definition
@@ -38,17 +38,6 @@ domain(ah, [1,0]).
 domain(ic, [1,0]).
 domain(mc, [1,0]).
 domain(ac, [1,0]).
-
-%% init(-I:list)
-%
-%  Set of all initial possible initial states.
-%  
-%  @arg I initial state
-%  @see state/1
-%
-init(I):-
-    I = [0,_,1,1,_,1],
-    state(I).
 
 %% state(+State:attributes) is semidet
 %
