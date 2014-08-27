@@ -32,22 +32,13 @@ Fin = [1, 0, 1, _G2063, _G2066, _G2069].
 %  @arg Action Action's name.
 %
 perform([0,1,1,I,M,A], [1,0,1,I,M,A], buyH).
-perform([1,1,1,0,M,1], [1,0,1,1,M,1], compH). 
-perform([1,1,1,1,_,1], [1,0,1,1,1,1], compH).
-perform([0,D,1,1,M,1], [1,D,1,0,M,1], takeH).
-perform([1,D,1,I,M,A], [0,D,1,I,M,A], loseH).
-perform([1,D,1,I,M,A], [1,D,1,I,M,A], doNoH).
-perform([C,D,0,I,M,A], [C,D,0,I,M,A], doNoH).
-perform([0,D,1,I,M,A], [0,D,0,I,M,A], doNoH).
-
-
-precon([0,1,1,_,_,_], buyH).
-precon([1,1,1,1,_,1], compH).
-precon([0,_,1,1,_,_], takeH).
-precon([1,_,1,_,_,_], loseH).
-precon([1,_,1,_,_,_], doNoH).
-precon([_,_,0,_,_,_], doNoH).
-precon([1,_,0,_,_,_], doNoH).
+perform([1,1,1,0,M,1], [1,0,1,1,M,1], comH). 
+perform([1,1,1,1,_,1], [1,0,1,1,1,1], comH).
+perform([0,D,1,1,M,1], [1,D,1,0,M,1], takH).
+perform([1,D,1,I,M,A], [0,D,1,I,M,A], losH).
+perform([1,D,1,I,M,A], [1,D,1,I,M,A], doNH).
+perform([C,D,0,I,M,A], [C,D,0,I,M,A], doNH).
+perform([0,D,1,I,M,A], [0,D,0,I,M,A], doNH).
 
 % NOTICE: 
 %

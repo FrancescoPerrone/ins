@@ -1,4 +1,4 @@
-/** File: debug.pl
+/* File: debug.pl
 
 Debugging framework and main.pl tester.
 
@@ -26,36 +26,62 @@ Debugging framework and main.pl tester.
 % main test
 % -----------------------------
 
-main:-  
+tc:-  
     message,
     repeat,
-    tab(1),
-    write('> '),
+    nl,
     read(State),
-    (  State == 0
+    ( State == e
     -> !
     ;  compute(State),
        fail
     ).
 
 compute(Init):-
-    trans(Init, Ac, L, Next),
-    wrt(Init, Ac, L, Next),
-    fail.
-compute.
+    ( not(state(Init)) 
+      -> error(Init)
+      ; header,
+	trans(Init, Ac, L, Next, 1),
+	output(Init, Ac, L, Next),
+	fail).
+compute(_):- footer.
 
+error(Init):-
+    nl,
+    ansi_format([bold,fg(red)], 'invalid input: ~w', [Init]),
+    fail.
+
+footer:-
+    nl,
+    statistics(runtime, [T]),
+    ansi_format([faint,fg(cyan)], 'Runtime: ~`.t ~f~34|', [T]),
+    nl.
+
+header:-
+    nl,
+    tab(3), write('s'),
+    tab(4), write('ini'), 
+    tab(14), write('act'), 
+    tab(5),  write('new'), 
+    tab(14), write('val'),
+    nl.
+
+output(Init, Ac, L, Next):-
+    wrt(Init, Ac, L, Next).
+    
 wrt(Init, Ac, L, Next):-
-    write(Init), tab(1), 
-    write(Ac), tab(1),
-    write('-->'), tab(1),
-    write(Next), tab(2), write(L),
+    tab(3), write(1),
+    tab(4), write(Init), 
+    tab(4), write(Ac), 
+    tab(4), write(Next), 
+    tab(4), write(L),
     nl.
 
 message:-
     cl,
-    ansi_format([faint,fg(cyan)], '------------------------~w', [------]),nl,
-    ansi_format([faint,fg(cyan)], 'Transition Calculator - ~w', [tester]),nl,
-    ansi_format([faint,fg(cyan)], '------------------------~w', [------]),nl,
-    write('Enter a state (or ''0'' to exit)'), nl.
+    ansi_format([faint,fg(cyan)], '--------------------------~w', [------]),nl,
+    ansi_format([faint,fg(cyan)], 'Transitions Computer v0.0 ~w', [tester]),nl,
+    ansi_format([faint,fg(cyan)], '--------------------------~w', [------]),nl,
+    write('Type a state (''e'' to exit)'), nl.
 cl:-
     format('~c~s~c~s', [0x1b, "[H", 0x1b, "[2J"]).

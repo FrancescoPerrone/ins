@@ -135,6 +135,6 @@ neutral(Ini, Fin, n-V):-
 %
 eval(Ini, Fin, Eval):-
     setof(V, 
-	  (promote(Ini, Fin, V); demote(Ini, Fin, V); neutral(Ini, Fin, V)),
+	  (promote(Ini, Fin, V); demote(Ini, Fin, V)/*; neutral(Ini, Fin, V)*/),
 	  Eval), !.
-eval(_, _, ['status not defined for this transition']).
+eval(_, _, ['n/a']).
