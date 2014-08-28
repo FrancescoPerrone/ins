@@ -33,18 +33,25 @@ performj([1,1,1,0,M,1], [1,0,1,0,M,0], comH-doNC).
 performj([1,1,1,1,M,1], [1,0,1,0,M,1], comH-losC).
 performj([1,1,1,0,M,1], [1,0,1,1,M,1], comH-takC).
 
-performj([0,M,1,0,1,1], [1,M,1,1,0,1], doNH-buyC). 
+
+performj([1,M,1,0,1,1], [1,M,1,1,0,1], doNH-buyC). 
 performj([I,M,0,0,1,1], [I,M,0,1,0,1], doNH-buyC).
 performj([0,M,1,0,1,1], [0,M,0,1,0,1], doNH-buyC).
-performj([0,M,1,1,1,1], [1,M,1,1,0,1], doNH-comC).
-performj([I,M,0,1,1,1], [I,M,0,1,0,1], doNH-comC).
+
+performj([1,M,1,1,1,1], [1,M,1,1,0,1], doNH-comC).
 performj([0,M,1,1,1,1], [0,M,0,1,0,1], doNH-comC).
-performj([0,M,1,0,M,1], [1,M,1,1,M,1], doNH-takC).
-performj([I,M,0,0,M,1], [I,M,0,1,M,1], doNH-takC).
 performj([0,M,1,0,M,1], [0,M,0,1,M,1], doNH-takC).
-performj([0,M,1,1,M,1], [1,M,1,0,M,1], doNH-losC).
+
+performj([1,M,1,0,M,1], [1,M,1,1,M,1], doNH-takC).
+performj([I,M,0,0,M,1], [I,M,0,1,M,1], doNH-takC).
+performj([0,M,1,1,M,1], [0,M,0,0,M,1], doNH-losC).
+
+% need fixed doNH-losC give unexpected repetitions
+performj([1,M,1,1,M,1], [1,M,1,0,M,1], doNH-losC).
 performj([I,M,0,1,M,1], [I,M,0,0,M,1], doNH-losC).
 performj([0,M,1,1,M,1], [0,M,0,0,M,1], doNH-losC).
+
+
 
 performj([1,M,1,0,1,1], [0,M,1,1,0,1], losH-buyC).
 performj([1,M,1,1,1,1], [0,M,1,1,0,1], losH-comC).

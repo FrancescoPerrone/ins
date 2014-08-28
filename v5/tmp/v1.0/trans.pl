@@ -60,6 +60,7 @@ trans_label(Init, L, A, N, B, P):-
     eval(N, P, L).
 
 jtrans(Init, Jac, L, Next):-
+    initial_state(Init),
     performj(Init, Next, Jac),
     eval(Init, Next, L).
 
