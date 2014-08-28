@@ -1,4 +1,4 @@
-:-module(trans, [trans/5, trans_label/6]).
+:-module(trans, [trans/5, trans_label/6, jtrans/4]).
 
 /** <module> Transitiona System
 

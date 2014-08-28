@@ -117,6 +117,55 @@ wrt_label(Init, L, A, N, B, P):-
     nl.
 
 
+% jtrans calulator begins
+% -----------------------------
+
+jt:-  
+    message('Joint Transitions Computer v0.0'),
+    repeat,
+    nl,
+    read(State),
+    ( State == e
+    -> !
+    ;  jcompute(State),
+       fail
+    ).
+
+jcompute(Init):-
+    ( not(state(Init)) 
+      -> error(Init)
+      ; jtab,
+	jtrans(Init, Ac, L, Next),
+	joutput(Init, Ac, L, Next),
+	fail).
+jcompute(_):- footer.
+
+% output format
+
+jtab:-
+    nl,
+    tab(3), write('s'),
+    tab(4), write('ini'), 
+    tab(14), write('act'), 
+    tab(10),  write('new'), 
+    tab(14), write('val'),
+    nl.
+
+joutput(Init, Ac, L, Next):-
+    jwrt(Init, Ac, L, Next).
+    
+jwrt(Init, Ac, L, Next):-
+    tab(3), write(1),
+    tab(4), write(Init), 
+    tab(4), write(Ac), 
+    tab(4), write(Next), 
+    tab(4), write(L),
+    nl.
+
+
+
+
+
 % general outputs
 % ------------------------
 
