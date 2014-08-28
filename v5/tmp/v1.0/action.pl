@@ -1,4 +1,4 @@
-:- module(act, [perform/3, precon/2]).
+:- module(act, [perform/3]).
 :- use_module(library(pldoc)).
 %:- doc_save(., [recursive(true)]).
 

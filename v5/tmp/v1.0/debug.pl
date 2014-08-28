@@ -23,11 +23,13 @@ Debugging framework and main.pl tester.
 :- use_module(trans).
 :- use_module(value).
 
-% main test
+
+
+% transition calulator begins
 % -----------------------------
 
 tc:-  
-    message,
+    message('Transitions Computer v0.1'),
     repeat,
     nl,
     read(State),
@@ -40,24 +42,15 @@ tc:-
 compute(Init):-
     ( not(state(Init)) 
       -> error(Init)
-      ; header,
+      ; tab,
 	trans(Init, Ac, L, Next, 1),
 	output(Init, Ac, L, Next),
 	fail).
 compute(_):- footer.
 
-error(Init):-
-    nl,
-    ansi_format([bold,fg(red)], 'invalid input: ~w', [Init]),
-    fail.
+% output format
 
-footer:-
-    nl,
-    statistics(runtime, [T]),
-    ansi_format([faint,fg(cyan)], 'Runtime: ~`.t ~f~34|', [T]),
-    nl.
-
-header:-
+tab:-
     nl,
     tab(3), write('s'),
     tab(4), write('ini'), 
@@ -77,11 +70,80 @@ wrt(Init, Ac, L, Next):-
     tab(4), write(L),
     nl.
 
-message:-
+
+
+% tran_label calulator begins
+% -----------------------------
+
+tl:-  
+    message('Trans_label Computer v0.0'),
+    repeat,
+    nl,
+    read(State),
+    ( State == e
+    -> !
+    ;  com_label(State),
+       fail
+    ).
+
+com_label(Init):-
+    ( not(state(Init)) 
+      -> error(Init)
+      ; tab_l,
+	trans_label(Init, L, A, N, B, P),
+	out_label(Init, L, A, N, B, P),
+	fail).
+com_label(_):- footer.
+
+
+% output format
+
+tab_l:-
+    nl,
+    tab(3),  write('ini'), 
+    tab(12), write('as1'),  
+    tab(17), write('as2'),
+    tab(19), write('val'),
+    nl.
+
+out_label(Init, L, A, N, B, P):-
+    wrt_label(Init, L, A, N, B, P).
+    
+wrt_label(Init, L, A, N, B, P):-
+    tab(3), write(Init), 
+    tab(2), write(A-N), 
+    tab(2), write(B-P), 
+    tab(4), write(L),
+    nl.
+
+
+% general outputs
+% ------------------------
+
+message(ID):-
     cl,
-    ansi_format([faint,fg(cyan)], '--------------------------~w', [------]),nl,
-    ansi_format([faint,fg(cyan)], 'Transitions Computer v0.0 ~w', [tester]),nl,
-    ansi_format([faint,fg(cyan)], '--------------------------~w', [------]),nl,
-    write('Type a state (''e'' to exit)'), nl.
+    nl,
+    ansi_format([faint,fg(cyan)],'~`-t~85|', []),nl,
+    ansi_format([faint,fg(cyan)], '~w', [ID]),nl,
+    ansi_format([faint,fg(cyan)],'~`-t~85|', []),nl, nl,
+    ansi_format([faint,fg(white), font(2)],'~w', ['Type state (or ''e'' to exit)']),nl.
+
 cl:-
     format('~c~s~c~s', [0x1b, "[H", 0x1b, "[2J"]).
+
+error(Init):-
+    nl,
+    ansi_format([faint,fg(white)], 'wrong term: ''~w~w ~n', [Init, '''']),
+    fail.
+
+footer:-
+    nl,
+    statistics(runtime, [T]),
+    ansi_format([faint,fg(cyan)], 'Runtime: ~`.t ~f~34|', [T]),
+    nl.
+
+sformat([H|Rest]):-
+    ( H = +_
+      -> (ansi_format([bold,fg(white)],  '~w', [H]))
+      ;  ansi_format([faint,fg(white)],  '~w', [H])),
+    sformat(Rest).
