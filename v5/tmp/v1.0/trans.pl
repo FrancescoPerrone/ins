@@ -33,9 +33,9 @@ trans(Init, [Act|Rest], Next, N):-
 arg(ActsX, Val):-
     initial_state(Init),
     trans(Init, ActsX, NextX, 2),
-    trans(Init, Acts, Next, 2),
+    not(not((trans(Init, Acts, Next, 2),
     Acts \= ActsX,
-    better(hal, Next, NextX, Val).
+    better(hal, Next, NextX, Val)))).
 
 attacks(arg(Acts, V1), arg(ActsX, V2)):-
     arg(Acts, V1),

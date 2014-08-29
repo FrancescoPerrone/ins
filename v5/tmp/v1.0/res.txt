@@ -1,86 +1,80 @@
-Arguments from intial state [0,1,1,1,1,1]
------------------------------------------
+1. In situation: [0, 1, 1, 1, 1, 1]
 
-*ActsX	= [buyH, doNH]
-*Val	= lifeH
+ActsX	= [buyH, losH]
+Val	= lifeH
 Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [buyH, losH]
-Next	= [0, 0, 1, 1, 1, 1]
-NextX	= [1, 0, 1, 1, 1, 1]
-
-*ActsX	= [takH, comH]
-*Val	= lifeH
-Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [buyH, losH]
-Next	= [0, 0, 1, 1, 1, 1]
-NextX	= [1, 0, 1, 1, 1, 1]
-
-*ActsX	= [takH, doNH]
-*Val	= lifeH
-Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [buyH, losH]
-Next	= [0, 0, 1, 1, 1, 1]
-NextX	= [1, 1, 1, 0, 1, 1]
-
-*ActsX	= [buyH, doNH]
-*Val	= lifeH
-Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [takH, losH]
-Next	= [0, 1, 1, 0, 1, 1]
-NextX	= [1, 0, 1, 1, 1, 1]
-
-*ActsX	= [takH, comH]
-*Val	= lifeH
-Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [takH, losH]
-Next	= [0, 1, 1, 0, 1, 1]
-NextX	= [1, 0, 1, 1, 1, 1]
-
-*ActsX	= [takH, doNH]
-*Val	= lifeH
-Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [takH, losH]
-Next	= [0, 1, 1, 0, 1, 1]
-NextX	= [1, 1, 1, 0, 1, 1]
-
-*ActsX	= [buyH, losH]
-*Val	= lifeH
-Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [doNH, doNH]
-Next	= [0, 1, 0, 1, 1, 1]
 NextX	= [0, 0, 1, 1, 1, 1]
 
-*ActsX	= [buyH, doNH]
-*Val	= lifeH
+ActsX	= [buyH, doNH]
+Val	= lifeH
 Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [doNH, doNH]
-Next	= [0, 1, 0, 1, 1, 1]
 NextX	= [1, 0, 1, 1, 1, 1]
 
-*ActsX	= [takH, comH]
-*Val	= lifeH
+ActsX	= [takH, comH]
+Val	= lifeH
 Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [doNH, doNH]
-Next	= [0, 1, 0, 1, 1, 1]
 NextX	= [1, 0, 1, 1, 1, 1]
 
-*ActsX	= [takH, losH]
-*Val	= lifeH
+ActsX	= [takH, losH]
+Val	= lifeH
 Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [doNH, doNH]
-Next	= [0, 1, 0, 1, 1, 1]
 NextX	= [0, 1, 1, 0, 1, 1]
 
-*ActsX	= [takH, doNH]
-*Val	= lifeH
+ActsX	= [takH, doNH]
+Val	= lifeH
 Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [doNH, doNH]
-Next	= [0, 1, 0, 1, 1, 1]
 NextX	= [1, 1, 1, 0, 1, 1]
 
-*ActsX	= [takH, doNH]
-*Val	= lifeH
-Init	= [0, 1, 1, 1, 1, 1]
-Acts	= [doNH, doNH]
-Next	= [0, 1, 0, 1, 1, 1]
-NextX	= [1, 1, 1, 0, 1, 1]
+
+2. In situation: [0, 1, 1, 1, 0, 1]
+
+ActsX	= [buyH, losH]
+Val	= lifeH
+Init	= [0, 1, 1, 1, 0, 1]
+NextX	= [0, 0, 1, 1, 0, 1]
+
+ActsX	= [buyH, doNH]
+Val	= lifeH
+Init	= [0, 1, 1, 1, 0, 1]
+NextX	= [1, 0, 1, 1, 0, 1]
+
+ActsX	= [takH, comH]
+Val	= lifeH
+Init	= [0, 1, 1, 1, 0, 1]
+NextX	= [1, 0, 1, 1, 0, 1]
+
+ActsX	= [takH, losH]
+Val	= lifeH
+Init	= [0, 1, 1, 1, 0, 1]
+NextX	= [0, 1, 1, 0, 0, 1]
+
+ActsX	= [takH, doNH]
+Val	= lifeH
+Init	= [0, 1, 1, 1, 0, 1]
+NextX	= [1, 1, 1, 0, 0, 1]
+
+
+3. In situation: [0, 0, 1, 1, 1, 1]
+
+ActsX	= [takH, losH]
+Val	= lifeH
+Init	= [0, 0, 1, 1, 1, 1]
+NextX	= [0, 0, 1, 0, 1, 1]
+
+ActsX	= [takH, doNH]
+Val	= lifeH
+Init	= [0, 0, 1, 1, 1, 1]
+NextX	= [1, 0, 1, 0, 1, 1]
+
+
+4. In situation: [0, 0, 1, 1, 0, 1]
+
+ActsX	= [takH, losH]
+Val	= lifeH
+Init	= [0, 0, 1, 1, 0, 1]
+NextX	= [0, 0, 1, 0, 0, 1]
+
+ActsX	= [takH, doNH]
+Val	= lifeH
+Init	= [0, 0, 1, 1, 0, 1]
+NextX	= [1, 0, 1, 0, 0, 1]
