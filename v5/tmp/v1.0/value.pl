@@ -34,7 +34,7 @@ true.
 %  @arg Values a set of social attitudes/interests
 %  @arg Agent agent's name.
 %
-subsc([lifeH, lifeC, freedomH, freedomC], hal).
+subscribes([lifeH, lifeC, freedomH, freedomC], hal).
 
 %% better(?A:state, ?B:state, ?Val) is semidet
 %  Defines the value's status 'better'

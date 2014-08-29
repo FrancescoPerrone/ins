@@ -1,70 +1,61 @@
-:-module(trans, [trans/5, trans_label/6, jtrans/4]).
+:- module(trans, [better/4, trans/4, initial_state/1, arg/2]).
 
-/** <module> Transitiona System
+value(lifeH).
+value(lifeC).
+value(freedomH).
+value(freedomC).
 
-@tbd [ ] all documentation
-@tbd [ ] finalize trans/5
-@tbd [ ] finalize trans_label/4
-@tbd [ ] move from trans_label/4 to trans_label/6
-@tbd [ ] change name trans_label
-@tbd [ ] work on jtrans
 
-@author Francesco Perrone
-@license GNU
+sub([lifeH, lifeC, freedomH, freedomC], hal).
 
-*/
+% attributes([ih,mh,ah,ic,mc,ac]) @see state.pl
 
-%% init(-I:list)
-%
-%  Set of all initial possible initial states.
-%  
-%  @arg I initial state
-%  @see state/1
-%
-initial_state(I):-
-    % I = [0,_,1,1,_,1],
-    state(I).
+affects(mh, freedomH).
+affects(mc, freedomC).
+affects(ih, lifeH).
+affects(ic, lifeC).
+affects(ah, lifeH).
+affects(ac, lifeC).
 
-trans(Init, Ac, L, Next, 1):-
-    initial_state(Init),
-    perform(Init, Next, Ac),
-    eval(Init, Next, L).
-trans(Init, Ac, _, Next, N):-
+initial_state(Init):-
+    Init = [0,_,1,1,_,1],
+    state(Init).
+
+
+trans(Init, [Act], Next, 1):-
+    perform(Init, Next, Act).
+trans(Init, [Act|Rest], Next, N):-
+    N > 1,
     Step is N - 1,
-    N > 0,
-    initial_state(Init),
-    perform(Init, X, Ac),
-    initial_state(X),              % redundant?
-    trans(X, Ac, _, Next, Step).
+    perform(Init, X, Act),
+    trans(X, Rest, Next, Step).
 
-%% trans_label(Init, L, A, N, B, P)
-%
-%  Transition predicate.
-%  Evaluation is done confronting two different
-%  next states.
-%
-%  @arg Init Initial state
-%  @arg L The label: values status
-%  @arg A Action
-%  @arg N Next state applying action A from Init
-%  @arg B Action (B ≠ A)
-%  @arg P Next state applying action B from Init
-%
-%  @tbd find approrpiate name
-%
-trans_label(Init, L, A, N, B, P):-
+arg(ActsX, Val):-
     initial_state(Init),
-    perform(Init, N, A),
-    perform(Init, P, B),
-    not(N == P),
-    eval(N, P, L).
+    trans(Init, ActsX, NextX, 2),
+    trans(Init, Acts, Next, 2),
+    Acts \= ActsX,
+    better(hal, Next, NextX, Val).
 
-jtrans(Init, Jac, L, Next):-
-    initial_state(Init),
-    performj(Init, Next, Jac),
-    eval(Init, Next, L).
+attacks(arg(Acts, V1), arg(ActsX, V2)):-
+    arg(Acts, V1),
+    arg(ActsX, V2),
+    Acts \= ActsX.
 
-/*
-findAcs(Acs, In):-
-    bagof(Ac, Next^(perform(In, Next, Ac)), Acs).
-*/
+
+better(Ag, StateA, StateB, Val):-
+    value(Val),
+    sub(SetV, Ag),
+    member(Val, SetV),
+    affects(At, Val),
+    attribute(At, StateA, 0),
+    attribute(At, StateB, 1).
+    
+
+worse(Ag, StateA, StateB, Val):-
+    value(Val),
+    sub(SetV, Ag),
+    member(Val, SetV),
+    affects(At, Val),
+    attribute(At, StateA, 1),
+    attribute(At, StateB, 0).

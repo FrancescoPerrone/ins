@@ -1,4 +1,4 @@
-:- module(state, [state/1, attributes/1]).
+:- module(state, [state/1, attributes/1, attribute/3]).
 :- use_module(library(pldoc)).
 
 /** <module> Agent's State representation and definition
