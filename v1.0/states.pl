@@ -1,4 +1,4 @@
-:- module(state, [state/1, attributes/1, attribute/3]).
+:- module(state, [agent/1, state/1, attributes/1, attribute/3]).
 :- use_module(library(pldoc)).
 
 /** <module> Agent's State representation and definition
@@ -17,6 +17,8 @@ and 'a' is true if agent is alive. They are false otherwhise.
 @license GPL
 */
 
+agent(hal).
+agent(carla).
 
 %% attributes(List:list) is semidet
 % 
