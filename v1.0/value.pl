@@ -34,7 +34,7 @@ true.
 %  @arg Values a set of social attitudes/interests
 %  @arg Agent agent's name.
 %
-subsc([lifeH, lifeC, freedomH, freedomC], hal).
+subscribes([lifeH, lifeC, freedomH, freedomC], hal).
 
 %% better(?A:state, ?B:state, ?Val) is semidet
 %  Defines the value's status 'better'
@@ -135,6 +135,6 @@ neutral(Ini, Fin, n-V):-
 %
 eval(Ini, Fin, Eval):-
     setof(V, 
-	  (promote(Ini, Fin, V); demote(Ini, Fin, V); neutral(Ini, Fin, V)),
+	  (promote(Ini, Fin, V); demote(Ini, Fin, V)/*; neutral(Ini, Fin, V)*/),
 	  Eval), !.
-eval(_, _, ['status not defined for this transition']).
+eval(_, _, ['n/a']).
