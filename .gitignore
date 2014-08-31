@@ -1,4 +1,32 @@
-# gitignore file v1
+# -*- mode: gitignore; -*-
 
+# ignored folders
+# ---------------
 old/
 extras/report
+# I use this prefix for temp folders
+tmp-*/
+~*/
+
+# emacs files
+#---------------
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# gedit temp files
+# ----------------
+*~
+
+# grive temp files
+# ----------------
+*.grive
+
+# other ignd files
+# ----------------
+*.zip
