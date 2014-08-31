@@ -12,4 +12,3 @@ Acts = [takH, losH] ;
 Acts = [takH, doNH] ;
 Acts = [takH, losH] ;
 Acts = [takH, doNH] ;
-false.
