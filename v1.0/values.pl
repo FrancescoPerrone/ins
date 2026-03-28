@@ -65,7 +65,7 @@ demotes(Ag, S1, S2, -Val):-
     agent(Ag),
     worse(hal, S1, S2, Val).
 
-neutral(Ag, S1, S2, @Val):-
+neutral(Ag, S1, S2, @(Val)):-
     agent(Ag),
     neut(Ag, S1, S2, Val).
 
