@@ -71,10 +71,9 @@ preferred_extension(Ext) :-
     all_arguments(AllArgs),
     powerset(AllArgs, Ext),
     admissible(Ext),
-    \+ (powerset(AllArgs, Bigger),
-        Bigger \= Ext,
-        admissible(Bigger),
-        is_subset(Ext, Bigger)).
+    \+ (member(X, AllArgs),
+        \+ member(X, Ext),
+        admissible([X|Ext])).
 
 
 %% grounded_extension(-Ext:list) is det

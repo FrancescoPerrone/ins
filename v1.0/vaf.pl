@@ -129,10 +129,9 @@ vaf_preferred_extension(Ext, Aud) :-
     all_arguments(AllArgs),
     powerset(AllArgs, Ext),
     vaf_admissible(Ext, Aud),
-    \+ (powerset(AllArgs, Bigger),
-        Bigger \= Ext,
-        vaf_admissible(Bigger, Aud),
-        is_subset(Ext, Bigger)).
+    \+ (member(X, AllArgs),
+        \+ member(X, Ext),
+        vaf_admissible([X|Ext], Aud)).
 
 
 %% vaf_grounded_extension(-Ext:list, +Audience:atom) is det

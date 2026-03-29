@@ -40,6 +40,8 @@ perform([1,D,1,I,M,A], [1,D,1,I,M,A], doNH).
 perform([C,D,0,I,M,A], [C,D,0,I,M,A], doNH).
 perform([0,D,1,I,M,A], [0,D,0,I,M,A], doNH).
 
+perform([1,0,1,1,Mc,Ac], [1,1,1,1,Mc,Ac], earnH).
+
 % NOTICE: 
 %
 % 1. Only an agent with money and insulin, might compAg
