@@ -63,7 +63,7 @@ promotes(Ag, S1, S2, +Val):-
 
 demotes(Ag, S1, S2, -Val):-
     agent(Ag),
-    worse(hal, S1, S2, Val).
+    worse(Ag, S1, S2, Val).
 
 neutral(Ag, S1, S2, @(Val)):-
     agent(Ag),

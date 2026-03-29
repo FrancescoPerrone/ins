@@ -46,10 +46,8 @@ performj([1,M,1,0,M,1], [1,M,1,1,M,1], doNH-takC).
 performj([I,M,0,0,M,1], [I,M,0,1,M,1], doNH-takC).
 performj([0,M,1,1,M,1], [0,M,0,0,M,1], doNH-losC).
 
-% need fixed doNH-losC give unexpected repetitions
 performj([1,M,1,1,M,1], [1,M,1,0,M,1], doNH-losC).
 performj([I,M,0,1,M,1], [I,M,0,0,M,1], doNH-losC).
-performj([0,M,1,1,M,1], [0,M,0,0,M,1], doNH-losC).
 
 
 

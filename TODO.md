@@ -12,28 +12,15 @@ exactly once, likely using `setof/3` or explicit cuts.
 
 ---
 
-## 2. Fix `doNH-losC` duplicate clauses (jactions.pl) — BUG
+## 2. ~~Fix `doNH-losC` duplicate clauses (jactions.pl)~~ — DONE
 
-Lines 47 and 52 are identical:
-
-```prolog
-performj([0,M,1,1,M,1], [0,M,0,0,M,1], doNH-losC).
-```
-
-This causes unexpected repeated solutions. One clause must be removed or the
-precondition distinguished.
+Removed duplicate clause at line 52.
 
 ---
 
-## 3. Fix `demotes/4` hardcoded agent (values.pl) — BUG
+## 3. ~~Fix `demotes/4` hardcoded agent (values.pl)~~ — DONE
 
-```prolog
-demotes(Ag, S1, S2, -Val):-
-    agent(Ag),
-    worse(hal, S1, S2, Val).   % <-- should be Ag, not hal
-```
-
-`eval/4` will give wrong results for any agent other than Hal.
+Changed `worse(hal, ...)` to `worse(Ag, ...)` so `eval/4` works correctly for any agent.
 
 ---
 

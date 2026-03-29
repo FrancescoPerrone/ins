@@ -5,7 +5,9 @@
     admissible/1,
     preferred_extension/1,
     grounded_extension/1,
-    stable_extension/1
+    stable_extension/1,
+    powerset/2,
+    is_subset/2
 ]).
 
 :- use_module(args).
