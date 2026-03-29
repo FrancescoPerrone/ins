@@ -6,6 +6,7 @@
 :- use_module(values).
 :- use_module(args).
 :- use_module(extensions).
+:- use_module(vaf).
 
 
 %           Starts the PlDoc services
@@ -66,6 +67,21 @@
 :- format("~n--- Stable extensions ---~n"),
    forall(stable_extension(Ext),
           format("stable: ~w~n", [Ext])).
+
+
+% 11. VAF defeats and preferred extensions per audience
+:- format("~n--- VAF: defeats and preferred extensions by audience ---~n"),
+   forall(audience(Aud, Order),
+          (format("~naudience(~w): ~w~n", [Aud, Order]),
+           format("  defeats:~n"),
+           forall(defeats(A, B, Aud),
+                  format("    ~w defeats ~w~n", [A, B])),
+           format("  grounded: "),
+           vaf_grounded_extension(GExt, Aud),
+           format("~w~n", [GExt]),
+           format("  preferred extensions:~n"),
+           forall(vaf_preferred_extension(Ext, Aud),
+                  format("    ~w~n", [Ext])))).
 
 
 %           Listener
