@@ -75,17 +75,19 @@ per audience.
 
 ---
 
-## 11. Fix typo in `webapp/test.pl`
+## ~~11. Fix typo in `webapp/test.pl`~~ — DONE
 
-Line 13: `contais(fridge)` → `contains(fridge)`.
+Fixed `contais(fridge)` → `contains(fridge)` as part of the webapp rewrite.
 
 ---
 
-## 12. Connect webapp to the reasoning system
+## ~~12. Connect webapp to the reasoning system~~ — DONE
 
-`webapp/test.pl` is a standalone HTTP skeleton with no link to the AATS modules.
-Once the core argumentation is stable, expose endpoints such as:
-- `GET /args` — list all current arguments
-- `GET /attacks` — list attack relations
-- `GET /extensions` — return grounded/preferred extensions
-- `GET /vaf/:audience` — return VAF preferred extensions for a named audience
+`webapp/test.pl` rewritten to load all AATS modules and expose four JSON endpoints:
+- `GET /args` — all 16 arguments as `{"actions":[...],"value":"..."}`
+- `GET /attacks` — all 232 attack pairs as `{"attacker":...,"attacked":...}`
+- `GET /extensions` — Dung grounded/preferred/stable extensions
+- `GET /vaf` — list all named audiences
+- `GET /vaf/:audience` — VAF preferred extensions for a named audience (404 if unknown)
+
+Start with `?- server(8000).` then visit `http://127.0.0.1:8000/`.
