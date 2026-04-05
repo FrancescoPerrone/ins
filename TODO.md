@@ -41,32 +41,29 @@ Exported `powerset/2` and `is_subset/2` so `vaf.pl` can import them without warn
 
 ---
 
-## 7. Wire joint actions into `trans.pl` — MISSING FEATURE
+## ~~7. Wire joint actions into `trans.pl`~~ — DONE
 
-`trans.pl` only calls `perform/3` (individual actions). `performj/3` from `jactions.pl`
-is never used. Need a `transj/4` (or extend `trans/4`) that applies joint actions,
-enabling multi-agent transition reasoning and arguments from Carla's perspective.
-
----
-
-## 8. Add Carla's value subscription (values.pl)
-
-`values.pl` only defines `sub([lifeH, lifeC, freedomH, freedomC], hal)`.
-Carla has no value set, so no arguments can be generated from her perspective. Add:
-
-```prolog
-sub([lifeC, freedomC], carla).
-```
-
-and verify `arg/2` works symmetrically for her once joint actions are wired in.
+Added `transj/4` to `trans.pl` (mirrors `trans/4` using `performj/3`). Exported via
+module declaration; `jactions` loaded via `use_module`. `dbg.pl` test section 12
+confirms joint transitions fire correctly from all initial states.
 
 ---
 
-## 9. Include `neut` in `eval/4` (values.pl)
+## ~~8. Add Carla's value subscription (values.pl)~~ — DONE
 
-`neutral/3` and `neut/4` are defined but `eval/4` only collects promoted and demoted
-values, ignoring neutral ones. Either include them with `@Val` tagging or document
-the intentional omission.
+Added `sub([lifeC, freedomC], carla).` to `values.pl`. `dbg.pl` test section 13
+confirms `eval(carla, ...)` produces correct `[+lifeC]`/`[-freedomC]` evaluations
+over joint transitions.
+
+---
+
+## ~~9. Include `neut` in `eval/4` (values.pl)~~ — DONE
+
+Added `neutral(Ag, S1, S2, Val)` as a third disjunct in `eval/4`'s `setof`. Neutral
+values appear as `@(Val)` in the result, visually distinct from `+Val`/`-Val`.
+Comment above `eval/4` documents why they were originally omitted (no role in
+argument construction or the Dung attack relation) and why they are now included
+(completeness).
 
 ---
 

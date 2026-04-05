@@ -2,6 +2,7 @@
 
 :- use_module(states).
 :- use_module(actions).
+:- use_module(jactions).
 :- use_module(trans).
 :- use_module(values).
 :- use_module(args).
@@ -82,6 +83,18 @@
            format("  preferred extensions:~n"),
            forall(vaf_preferred_extension(Ext, Aud),
                   format("    ~w~n", [Ext])))).
+
+
+% 12. Show all 1-step joint transitions from initial states
+:- format("~n--- 1-step joint transitions from initial states ---~n"),
+   forall((initial_state(Init), performj(Init, Next, Jac)),
+          format("~w --[~w]--> ~w~n", [Init, Jac, Next])).
+
+% 13. Value evaluations for Carla (via joint transitions)
+:- format("~n--- Value evaluations (carla, joint transitions) ---~n"),
+   forall((initial_state(S1), performj(S1, S2, _),
+           eval(carla, S1, S2, Eval)),
+          format("~w -> ~w : ~w~n", [S1, S2, Eval])).
 
 
 %           Listener

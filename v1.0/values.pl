@@ -8,6 +8,7 @@ value(freedomC).
 
 % means that an agent subscribes to a set of values
 sub([lifeH, lifeC, freedomH, freedomC], hal).
+sub([lifeC, freedomC], carla).
 
 % attributes([ih,mh,ah,ic,mc,ac]) @see state.pl
 affects(mh, freedomH).
@@ -46,10 +47,21 @@ neut(Ag, S1, S2, Val):-
     attribute(At, S2, Val2),
     Val1 = Val2.
 
+% eval/4 was originally written to collect only promoted (+Val) and demoted
+% (-Val) values, intentionally omitting neutral ones (@(Val)).  The
+% rationale was that only promoted/demoted values participate in argument
+% construction (better/4, worse/4) and in the Dung attack relation, so
+% neutral values add no information to the argumentation layer.
+%
+% They are included here for completeness: a full state evaluation should
+% account for every subscribed value, not only the ones that changed.
+% The @(Val) tag keeps them visually distinct from promotions/demotions so
+% callers that only care about changes can still filter them out.
 eval(Ag, S1, S2, Eval):-
     setof(Val,
 	  (promotes(Ag, S1, S2, Val)
-	   ; demotes(Ag, S1, S2, Val)),
+	   ; demotes(Ag, S1, S2, Val)
+	   ; neutral(Ag, S1, S2, Val)),
 	  Eval),
     true.
 
