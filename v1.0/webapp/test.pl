@@ -1,6 +1,11 @@
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/http_json)).
+:- use_module(library(http/http_files)).
+
+% Capture the webapp directory at load time so handle_root can find index.html.
+:- dynamic webapp_dir/1.
+:- prolog_load_context(file, F), file_directory_name(F, D), assertz(webapp_dir(D)).
 
 :- use_module('../states').
 :- use_module('../actions').
@@ -24,13 +29,11 @@ server(Port) :-
     http_server(http_dispatch, [port(Port)]).
 
 
-% GET /  — API description
-handle_root(_Request) :-
-    reply_json(json([
-        status      = ok,
-        description = 'INS moral reasoning API',
-        routes      = ['/args', '/attacks', '/extensions', '/vaf', '/vaf/:audience', '/vaf/:audience/grounded']
-    ])).
+% GET /  — serves the HTML frontend (index.html in the same directory)
+handle_root(Request) :-
+    webapp_dir(Dir),
+    atom_concat(Dir, '/index.html', Index),
+    http_reply_file(Index, [], Request).
 
 
 % GET /args
