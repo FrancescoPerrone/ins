@@ -76,20 +76,35 @@ handle_extensions(_Request) :-
 
 
 % GET /vaf
-% Lists all named audiences and their value orderings.
+%   Lists all named audiences and their value orderings.
 %
 % GET /vaf/:audience
-% VAF preferred extensions for the named audience (Bench-Capon 2003).
-% Returns {"audience": "...", "order": [...], "preferred": [...]}.
-% Returns 404 if the audience name is not recognised.
+%   VAF preferred extensions for the named audience (Bench-Capon 2003).
+%   Returns {"audience":"...","order":[...],"preferred":[...]}.
+%
+% GET /vaf/:audience/grounded
+%   VAF grounded extension for the named audience.
+%   Returns {"audience":"...","grounded":[...]}.
+%
+% All /vaf routes return 404 for an unrecognised audience name.
 handle_vaf(Request) :-
     (   memberchk(path_info(PathInfo), Request),
-        atom_concat('/', Aud, PathInfo),
-        Aud \= ''
-    ->  handle_vaf_audience(Aud)
+        atom_concat('/', Rest, PathInfo),
+        Rest \= ''
+    ->  atomic_list_concat(Parts, '/', Rest),
+        handle_vaf_path(Parts)
     ;   findall(json([audience=A, order=O]), audience(A, O), Auds),
         reply_json(Auds)
     ).
+
+handle_vaf_path([Aud]) :-
+    !,
+    handle_vaf_audience(Aud).
+handle_vaf_path([Aud, grounded]) :-
+    !,
+    handle_vaf_grounded(Aud).
+handle_vaf_path(_) :-
+    reply_json(json([error='not found']), [status(404)]).
 
 handle_vaf_audience(Aud) :-
     (   audience(Aud, Order)
@@ -99,6 +114,17 @@ handle_vaf_audience(Aud) :-
             audience  = Aud,
             order     = Order,
             preferred = ExtsJSON
+        ]))
+    ;   reply_json(json([error='unknown audience', audience=Aud]), [status(404)])
+    ).
+
+handle_vaf_grounded(Aud) :-
+    (   audience(Aud, _)
+    ->  vaf_grounded_extension(Grounded, Aud),
+        ext_json(Grounded, GroundedJSON),
+        reply_json(json([
+            audience = Aud,
+            grounded = GroundedJSON
         ]))
     ;   reply_json(json([error='unknown audience', audience=Aud]), [status(404)])
     ).
