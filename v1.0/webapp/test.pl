@@ -29,15 +29,19 @@ handle_root(_Request) :-
     reply_json(json([
         status      = ok,
         description = 'INS moral reasoning API',
-        routes      = ['/args', '/attacks', '/extensions', '/vaf/:audience']
+        routes      = ['/args', '/attacks', '/extensions', '/vaf', '/vaf/:audience', '/vaf/:audience/grounded']
     ])).
 
 
 % GET /args
-% All arguments: action sequences that promote a subscribed value for Hal.
-% Each argument is {"actions": [...], "value": "..."}.
+% All arguments for all agents.
+% Hal uses individual action sequences; Carla uses joint action sequences.
+% Each entry is {"agent": "...", "actions": [...], "value": "..."}.
 handle_args(_Request) :-
-    findall(J, (arg(Acts, Val), arg_json(Acts, Val, J)), Args),
+    findall(J, (member(Ag, [hal, carla]),
+                argument(Ag, Acts, Val),
+                arg_json(Ag, Acts, Val, J)),
+            Args),
     reply_json(Args).
 
 
@@ -102,10 +106,11 @@ handle_vaf_audience(Aud) :-
 
 % --- Helpers ---
 
-% arg_json(+Acts, +Val, -JSON) converts an argument to a JSON object term.
-arg_json(Acts, Val, json([actions=Acts, value=Val])).
+% arg_json(+Ag, +Acts, +Val, -JSON) — argument with agent field.
+arg_json(Ag, Acts, Val, json([agent=Ag, actions=Acts, value=Val])).
 
 % ext_json(+Ext, -JSON) converts a list of arg/2 terms to a JSON array.
+% Extensions track only actions and value (agent is not stored in arg/2 terms).
 ext_json(Ext, JSON) :-
     maplist(arg_to_json, Ext, JSON).
 

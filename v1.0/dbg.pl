@@ -96,6 +96,11 @@
            eval(carla, S1, S2, Eval)),
           format("~w -> ~w : ~w~n", [S1, S2, Eval])).
 
+% 14. Carla's arguments (joint action sequences promoting her subscribed values)
+:- format("~n--- Carla's arguments ---~n"),
+   forall(argument(carla, Acts, Val),
+          format("argument(carla, ~w, ~w)~n", [Acts, Val])).
+
 
 %           Listener
 
