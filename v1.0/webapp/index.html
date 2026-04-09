@@ -2,182 +2,594 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>INS — Moral Reasoning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>INS — Moral Reasoning System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:           #0b0d13;
+      --bg-card:      #10131c;
+      --bg-elevated:  #161a26;
+      --border:       #1c2030;
+      --border-mid:   #252c3f;
+      --text:         #b8b3a8;
+      --text-dim:     #525870;
+      --text-bright:  #e6e0d4;
+      --accent:       #c9a94a;
+      --accent-glow:  rgba(201,169,74,0.07);
+
+      --hal:   #5b9cf6;
+      --carla: #c084fc;
+
+      --lifeH-bg:     #091e3e;  --lifeH-fg:     #60a5fa;  --lifeH-bdr:    #1a3a7a;
+      --lifeC-bg:     #07231a;  --lifeC-fg:     #34d399;  --lifeC-bdr:    #0e4a30;
+      --freedomH-bg:  #231500;  --freedomH-fg:  #fbbf24;  --freedomH-bdr: #4a2d00;
+      --freedomC-bg:  #220b17;  --freedomC-fg:  #f472b6;  --freedomC-bdr: #581230;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: Georgia, serif;
-      max-width: 960px;
-      margin: 2em auto;
-      padding: 0 1.5em;
-      color: #222;
-      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.7;
     }
-    h1 { font-size: 1.7em; margin-bottom: 0.15em; }
-    .subtitle { color: #666; font-style: italic; margin-bottom: 2.5em; font-size: 0.95em; }
-    h2 {
-      font-size: 1.15em;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 0.3em;
-      margin: 2.5em 0 0.8em;
-    }
-    h3 { font-size: 1em; color: #444; margin: 1.2em 0 0.4em; }
-    table { border-collapse: collapse; width: 100%; font-size: 0.88em; margin: 0.5em 0 1em; }
-    th, td { border: 1px solid #ddd; padding: 5px 10px; text-align: left; vertical-align: top; }
-    th { background: #f5f5f5; font-weight: bold; }
-    ol { padding-left: 1.6em; margin: 0.3em 0; }
-    li { margin: 0.3em 0; font-size: 0.9em; }
-    code { font-family: monospace; font-size: 0.92em; }
 
-    /* value colour tags */
+    /* ── Header ───────────────────────────────────────────────── */
+    .hdr {
+      padding: 4em 2em 2.5em;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .hdr::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% -10%, var(--accent-glow), transparent);
+      pointer-events: none;
+    }
+    .hdr h1 {
+      font-size: 2.9em;
+      font-weight: 300;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-bright);
+      position: relative;
+    }
+    .hdr h1 em {
+      font-style: italic;
+      color: var(--accent);
+      font-weight: 400;
+    }
+    .hdr .sub {
+      margin-top: 0.4em;
+      font-size: 0.88em;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+    .hdr .refs {
+      margin-top: 0.5em;
+      font-size: 0.75em;
+      font-style: italic;
+      color: var(--text-dim);
+    }
+
+    /* ── Sticky nav ───────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11,13,19,0.93);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+    }
+    .nav a {
+      display: block;
+      padding: 0.85em 1.8em;
+      text-decoration: none;
+      color: var(--text-dim);
+      font-size: 0.76em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.18s, border-color 0.18s;
+    }
+    .nav a:hover {
+      color: var(--text-bright);
+      border-bottom-color: var(--accent);
+    }
+
+    /* ── Main content ─────────────────────────────────────────── */
+    .main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 2em 5em;
+    }
+
+    /* ── Section ──────────────────────────────────────────────── */
+    .sec {
+      padding: 3em 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sec:last-child { border-bottom: none; }
+
+    .sec-hdr {
+      display: flex;
+      align-items: baseline;
+      gap: 1em;
+      margin-bottom: 1.6em;
+    }
+    .sec-title {
+      font-size: 1.65em;
+      font-weight: 400;
+      color: var(--text-bright);
+      letter-spacing: 0.04em;
+    }
+    .sec-count {
+      font-size: 0.74em;
+      color: var(--text-dim);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    /* ── Value chips ──────────────────────────────────────────── */
     .val {
-      display: inline-block;
-      font-family: monospace;
-      font-size: 0.82em;
-      padding: 1px 6px;
+      display: inline-flex;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68em;
+      font-weight: 500;
+      padding: 2px 7px 3px;
       border-radius: 3px;
-      font-weight: bold;
+      border: 1px solid;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
     }
-    .lifeH    { background: #cce5ff; color: #004085; }
-    .lifeC    { background: #d4edda; color: #155724; }
-    .freedomH { background: #fff3cd; color: #856404; }
-    .freedomC { background: #f8d7da; color: #721c24; }
+    .val.lifeH    { background: var(--lifeH-bg);    color: var(--lifeH-fg);    border-color: var(--lifeH-bdr); }
+    .val.lifeC    { background: var(--lifeC-bg);    color: var(--lifeC-fg);    border-color: var(--lifeC-bdr); }
+    .val.freedomH { background: var(--freedomH-bg); color: var(--freedomH-fg); border-color: var(--freedomH-bdr); }
+    .val.freedomC { background: var(--freedomC-bg); color: var(--freedomC-fg); border-color: var(--freedomC-bdr); }
 
-    .agent-hal   { color: #0056b3; }
-    .agent-carla { color: #6f42c1; }
+    /* ── Monospace / action sequences ────────────────────────── */
+    .acts {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78em;
+      color: var(--text);
+    }
+    .arr { color: var(--text-dim); padding: 0 0.2em; }
 
-    .empty { color: #999; font-style: italic; }
-    .audience-block { margin: 1em 0 1.5em; }
-    .order { font-size: 0.88em; color: #555; margin-bottom: 0.4em; }
-    .count  { font-size: 0.88em; color: #666; margin-bottom: 0.4em; }
-    .loading { color: #aaa; font-style: italic; }
-    .err { color: #c00; }
+    /* ── Agent colours ────────────────────────────────────────── */
+    .hal   { color: var(--hal); }
+    .carla { color: var(--carla); }
+
+    /* ── Arguments grid ───────────────────────────────────────── */
+    .args-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2em;
+    }
+    .agent-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .agent-panel-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75em 1.1em;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.76em;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+    .arg-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.55em 1.1em;
+      border-bottom: 1px solid var(--border);
+      gap: 0.7em;
+      transition: background 0.12s;
+    }
+    .arg-row:last-child { border-bottom: none; }
+    .arg-row:hover { background: var(--bg-elevated); }
+
+    /* ── Attacks ──────────────────────────────────────────────── */
+    .attacks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4em;
+    }
+    .attack-row {
+      display: flex;
+      align-items: center;
+      gap: 0.7em;
+      padding: 0.65em 1em;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      transition: border-color 0.14s;
+    }
+    .attack-row:hover { border-color: var(--border-mid); }
+    .attack-side {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.45em;
+    }
+    .attack-side.right { justify-content: flex-end; }
+    .attack-mid {
+      display: flex;
+      align-items: center;
+      gap: 0.25em;
+      color: #9b2c2c;
+      font-size: 0.8em;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    .attack-mid .lbl { color: var(--text-dim); }
+
+    /* ── Extensions tabs ──────────────────────────────────────── */
+    .ext-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.4em;
+    }
+    .ext-tab {
+      padding: 0.6em 1.3em;
+      font-size: 0.76em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .ext-tab:hover:not(.active) { color: var(--text); }
+    .ext-tab.active { color: var(--text-bright); border-bottom-color: var(--accent); }
+    .ext-panel { display: none; }
+    .ext-panel.active { display: block; }
+    .ext-list { display: flex; flex-direction: column; gap: 0.4em; }
+    .ext-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8em;
+      padding: 0.6em 1em;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+    .ext-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68em;
+      color: var(--text-dim);
+      min-width: 1.6em;
+      padding-top: 0.15em;
+    }
+    .ext-args {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6em 1em;
+      align-items: center;
+    }
+    .ext-arg { display: flex; align-items: center; gap: 0.35em; }
+
+    /* ── VAF grid ─────────────────────────────────────────────── */
+    .vaf-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.1em;
+    }
+    .aud-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .aud-card-hdr {
+      padding: 1em 1.2em 0.9em;
+      border-bottom: 1px solid var(--border);
+    }
+    .aud-name {
+      font-size: 1em;
+      font-weight: 600;
+      color: var(--text-bright);
+      letter-spacing: 0.04em;
+    }
+    .aud-order {
+      display: flex;
+      align-items: center;
+      gap: 0.3em;
+      flex-wrap: wrap;
+      margin-top: 0.55em;
+    }
+    .ord-sep { color: var(--text-dim); font-size: 0.85em; }
+    .aud-body { padding: 1em 1.2em; }
+    .aud-sub-title {
+      font-size: 0.7em;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      margin-bottom: 0.45em;
+    }
+    .aud-ext-list { display: flex; flex-direction: column; gap: 0.3em; }
+    .aud-ext-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
+      flex-wrap: wrap;
+      font-size: 0.88em;
+    }
+    .aud-sep { color: var(--text-dim); padding: 0 0.1em; }
+
+    /* ── Misc ─────────────────────────────────────────────────── */
+    .empty { color: var(--text-dim); font-style: italic; }
+    .err   { color: #e05555; font-style: italic; }
+
+    .loading {
+      color: var(--text-dim);
+      font-style: italic;
+      padding: 0.5em 0;
+    }
+
+    @media (max-width: 620px) {
+      .args-grid, .vaf-grid { grid-template-columns: 1fr; }
+      .hdr h1 { font-size: 2em; }
+      .attack-row { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
 
-<h1>INS — Moral Reasoning System</h1>
-<p class="subtitle">
-  Action-based Alternating Transition System with Value-Based Argumentation ·
-  Atkinson &amp; Bench-Capon (2006) · Bench-Capon (2003)
-</p>
+<header class="hdr">
+  <h1><em>INS</em> — Moral Reasoning System</h1>
+  <p class="sub">Action-based Alternating Transition System · Value-Based Argumentation Framework</p>
+  <p class="refs">Atkinson &amp; Bench-Capon (2006) · Bench-Capon (2003) · Dung (1995)</p>
+</header>
 
-<h2>Arguments</h2>
-<p class="count" id="args-count"></p>
-<div id="args" class="loading">Loading…</div>
+<nav class="nav">
+  <a href="#sec-args">Arguments</a>
+  <a href="#sec-attacks">Attacks</a>
+  <a href="#sec-extensions">Extensions</a>
+  <a href="#sec-vaf">VAF</a>
+</nav>
 
-<h2>Attacks</h2>
-<p class="count" id="attacks-count"></p>
-<div id="attacks" class="loading">Loading…</div>
+<div class="main">
 
-<h2>Dung Extensions</h2>
-<div id="extensions" class="loading">Loading…</div>
+  <!-- ── Arguments ── -->
+  <section class="sec" id="sec-args">
+    <div class="sec-hdr">
+      <h2 class="sec-title">Arguments</h2>
+      <span class="sec-count" id="args-count"></span>
+    </div>
+    <div id="args-body" class="loading">Loading…</div>
+  </section>
 
-<h2>VAF Extensions by Audience</h2>
-<div id="vaf" class="loading">Loading…</div>
+  <!-- ── Attacks ── -->
+  <section class="sec" id="sec-attacks">
+    <div class="sec-hdr">
+      <h2 class="sec-title">Attack Relation</h2>
+      <span class="sec-count" id="attacks-count"></span>
+    </div>
+    <div id="attacks-body" class="loading">Loading…</div>
+  </section>
+
+  <!-- ── Extensions ── -->
+  <section class="sec" id="sec-extensions">
+    <div class="sec-hdr">
+      <h2 class="sec-title">Dung Extensions</h2>
+    </div>
+    <div id="extensions-body" class="loading">Loading…</div>
+  </section>
+
+  <!-- ── VAF ── -->
+  <section class="sec" id="sec-vaf">
+    <div class="sec-hdr">
+      <h2 class="sec-title">VAF by Audience</h2>
+    </div>
+    <div id="vaf-body" class="loading">Loading…</div>
+  </section>
+
+</div>
 
 <script>
-/* ---- helpers ---- */
+/* ── helpers ─────────────────────────────────────────── */
 
-function valTag(v) {
+function valChip(v) {
   return `<span class="val ${v}">${v}</span>`;
 }
 
-function fmtArg(a) {
-  const acts = Array.isArray(a.actions) ? a.actions.join(', ') : a.actions;
-  return `<code>${acts}</code> → ${valTag(a.value)}`;
+function acts(a) {
+  return Array.isArray(a.actions) ? a.actions.join(', ') : String(a.actions);
 }
 
+/* Inline representation of one argument: acts → chip */
+function argInline(a) {
+  return `<span class="acts">${acts(a)}</span><span class="arr">→</span>${valChip(a.value)}`;
+}
+
+/* Format an extension (array of args), or ∅ */
 function fmtExt(ext) {
   if (!ext || ext.length === 0) return '<span class="empty">∅</span>';
-  return ext.map(fmtArg).join('<br>');
+  return ext.map(a => `<div class="ext-arg">${argInline(a)}</div>`).join('');
 }
 
-function agentSpan(ag) {
-  return `<span class="agent-${ag}">${ag}</span>`;
+function get(url) {
+  return fetch(url).then(r => {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  });
 }
 
-function get(url) { return fetch(url).then(r => r.json()); }
+function err(id, msg) {
+  document.getElementById(id).innerHTML = `<span class="err">Error: ${msg}</span>`;
+}
 
-/* ---- arguments ---- */
+
+/* ── Arguments ──────────────────────────────────────── */
 
 get('/args').then(args => {
   const hal   = args.filter(a => a.agent === 'hal');
   const carla = args.filter(a => a.agent === 'carla');
 
   document.getElementById('args-count').textContent =
-    `${args.length} total (${hal.length} Hal · ${carla.length} Carla)`;
+    `${args.length} total · ${hal.length} Hal · ${carla.length} Carla`;
 
-  function agentTable(list, ag) {
-    if (list.length === 0) return `<p class="empty">No arguments for ${ag}.</p>`;
+  function panel(list, ag, label) {
     const rows = list.map(a =>
-      `<tr><td><code>${Array.isArray(a.actions) ? a.actions.join(', ') : a.actions}</code></td>` +
-      `<td>${valTag(a.value)}</td></tr>`
+      `<div class="arg-row">
+         <span class="acts">${acts(a)}</span>
+         <span class="arr">→</span>
+         ${valChip(a.value)}
+       </div>`
     ).join('');
-    return `<table><tr><th>Action sequence</th><th>Value promoted</th></tr>${rows}</table>`;
+    return `<div class="agent-panel">
+      <div class="agent-panel-hdr">
+        <span class="${ag}">${label}</span>
+        <span class="sec-count">${list.length}</span>
+      </div>
+      ${rows || '<div class="arg-row empty">No arguments</div>'}
+    </div>`;
   }
 
-  document.getElementById('args').innerHTML =
-    `<h3>${agentSpan('hal')} — individual actions</h3>${agentTable(hal, 'hal')}` +
-    `<h3>${agentSpan('carla')} — joint actions</h3>${agentTable(carla, 'carla')}`;
-});
+  document.getElementById('args-body').innerHTML =
+    `<div class="args-grid">
+       ${panel(hal,   'hal',   'Hal — individual')}
+       ${panel(carla, 'carla', 'Carla — joint')}
+     </div>`;
 
-/* ---- attacks ---- */
+}).catch(e => err('args-body', e.message));
 
-get('/attacks').then(attacks => {
+
+/* ── Attacks ─────────────────────────────────────────── */
+
+get('/attacks').then(data => {
   document.getElementById('attacks-count').textContent =
-    `${attacks.length} attack pairs`;
+    `${data.length} pairs`;
 
-  const rows = attacks.map(a =>
-    `<tr><td>${fmtArg(a.attacker)}</td><td>${fmtArg(a.attacked)}</td></tr>`
+  const rows = data.map(a =>
+    `<div class="attack-row">
+       <div class="attack-side">
+         <span class="acts">${acts(a.attacker)}</span>
+         <span class="arr">→</span>${valChip(a.attacker.value)}
+       </div>
+       <div class="attack-mid">
+         <span>⟶</span><span class="lbl">attacks</span><span>⟶</span>
+       </div>
+       <div class="attack-side right">
+         ${valChip(a.attacked.value)}<span class="arr">←</span>
+         <span class="acts">${acts(a.attacked)}</span>
+       </div>
+     </div>`
   ).join('');
-  document.getElementById('attacks').innerHTML =
-    `<table><tr><th>Attacker</th><th>Attacked</th></tr>${rows}</table>`;
-});
 
-/* ---- Dung extensions ---- */
+  document.getElementById('attacks-body').innerHTML =
+    `<div class="attacks-list">${rows || '<span class="empty">No attacks</span>'}</div>`;
+
+}).catch(e => err('attacks-body', e.message));
+
+
+/* ── Dung Extensions ─────────────────────────────────── */
 
 get('/extensions').then(data => {
-  let html = `<h3>Grounded</h3><p>${fmtExt(data.grounded)}</p>`;
+  const grHtml = `<div class="ext-list"><div class="ext-item">
+    <div class="ext-args">${fmtExt(data.grounded)}</div></div></div>`;
 
-  html += `<h3>Preferred (${data.preferred.length})</h3><ol>` +
-    data.preferred.map(e => `<li>${fmtExt(e)}</li>`).join('') + '</ol>';
+  function extList(exts) {
+    if (exts.length === 0) return '<span class="empty">none</span>';
+    return '<div class="ext-list">' + exts.map((e, i) =>
+      `<div class="ext-item">
+         <span class="ext-num">${i + 1}.</span>
+         <div class="ext-args">${fmtExt(e)}</div>
+       </div>`
+    ).join('') + '</div>';
+  }
 
-  html += `<h3>Stable (${data.stable.length})</h3><ol>` +
-    data.stable.map(e => `<li>${fmtExt(e)}</li>`).join('') + '</ol>';
+  document.getElementById('extensions-body').innerHTML =
+    `<div class="ext-tabs">
+       <div class="ext-tab active"  data-panel="ep-grounded">Grounded</div>
+       <div class="ext-tab" data-panel="ep-preferred">Preferred (${data.preferred.length})</div>
+       <div class="ext-tab" data-panel="ep-stable">Stable (${data.stable.length})</div>
+     </div>
+     <div id="ep-grounded"  class="ext-panel active">${grHtml}</div>
+     <div id="ep-preferred" class="ext-panel">${extList(data.preferred)}</div>
+     <div id="ep-stable"    class="ext-panel">${extList(data.stable)}</div>`;
 
-  document.getElementById('extensions').innerHTML = html;
+}).catch(e => err('extensions-body', e.message));
+
+/* Tab switching (delegated) */
+document.addEventListener('click', e => {
+  const tab = e.target.closest('.ext-tab');
+  if (!tab) return;
+  const sec = tab.closest('.sec');
+  sec.querySelectorAll('.ext-tab').forEach(t => t.classList.remove('active'));
+  sec.querySelectorAll('.ext-panel').forEach(p => p.classList.remove('active'));
+  tab.classList.add('active');
+  document.getElementById(tab.dataset.panel).classList.add('active');
 });
 
-/* ---- VAF ---- */
+
+/* ── VAF ──────────────────────────────────────────────── */
 
 get('/vaf').then(audiences => {
-  Promise.all(
+  return Promise.all(
     audiences.map(a =>
       Promise.all([
         get(`/vaf/${a.audience}`),
         get(`/vaf/${a.audience}/grounded`)
       ])
     )
-  ).then(results => {
-    const html = results.map(([pref, gnd]) => {
-      const order = pref.order.map(valTag).join(' &gt; ');
-      const groundedHtml = fmtExt(gnd.grounded);
-      const prefHtml = pref.preferred.length === 0
-        ? '<span class="empty">none</span>'
-        : '<ol>' + pref.preferred.map(e => `<li>${fmtExt(e)}</li>`).join('') + '</ol>';
+  );
+}).then(results => {
+  const cards = results.map(([pref, gnd]) => {
+    const orderHtml = pref.order
+      .map(valChip)
+      .join('<span class="ord-sep">›</span>');
 
-      return `<div class="audience-block">
-        <h3>${pref.audience}</h3>
-        <p class="order">Value order: ${order}</p>
-        <p><strong>Grounded:</strong> ${groundedHtml}</p>
-        <strong>Preferred:</strong>${prefHtml}
-      </div>`;
-    }).join('<hr style="border:none;border-top:1px solid #eee;margin:1em 0">');
+    const gndHtml = `<div class="aud-ext-item">${fmtExt(gnd.grounded)}</div>`;
 
-    document.getElementById('vaf').innerHTML = html;
-  });
-});
+    const prefHtml = pref.preferred.length === 0
+      ? '<div class="aud-ext-item empty">none</div>'
+      : pref.preferred.map(ext =>
+          `<div class="aud-ext-item">${
+            ext.map(argInline).join('<span class="aud-sep">·</span>')
+          }</div>`
+        ).join('');
+
+    return `<div class="aud-card">
+      <div class="aud-card-hdr">
+        <div class="aud-name">${pref.audience}</div>
+        <div class="aud-order">${orderHtml}</div>
+      </div>
+      <div class="aud-body">
+        <p class="aud-sub-title">Grounded</p>
+        <div class="aud-ext-list">${gndHtml}</div>
+        <p class="aud-sub-title" style="margin-top:0.9em">
+          Preferred (${pref.preferred.length})
+        </p>
+        <div class="aud-ext-list">${prefHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('vaf-body').innerHTML =
+    `<div class="vaf-grid">${cards}</div>`;
+
+}).catch(e => err('vaf-body', e.message));
 </script>
 </body>
 </html>

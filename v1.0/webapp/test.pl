@@ -33,7 +33,7 @@ server(Port) :-
 handle_root(Request) :-
     webapp_dir(Dir),
     atom_concat(Dir, '/index.html', Index),
-    http_reply_file(Index, [], Request).
+    http_reply_file(Index, [unsafe(true)], Request).
 
 
 % GET /args
@@ -54,8 +54,8 @@ handle_args(_Request) :-
 handle_attacks(_Request) :-
     findall(json([attacker=JA, attacked=JB]),
             (attacks(arg(A1,V1), arg(A2,V2)),
-             arg_json(A1, V1, JA),
-             arg_json(A2, V2, JB)),
+             arg_to_json(arg(A1,V1), JA),
+             arg_to_json(arg(A2,V2), JB)),
             Attacks),
     reply_json(Attacks).
 
