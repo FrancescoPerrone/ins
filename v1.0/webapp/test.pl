@@ -26,7 +26,8 @@
 % server(Port) starts the HTTP server at the given port.
 % e.g. ?- server(8000).  then visit http://127.0.0.1:8000/
 server(Port) :-
-    http_server(http_dispatch, [port(Port)]).
+    http_server(http_dispatch, [port(Port)]),
+    thread_get_message(_).
 
 
 % GET /  — serves the HTML frontend (index.html in the same directory)
