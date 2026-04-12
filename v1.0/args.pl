@@ -29,9 +29,11 @@ and vaf.pl need no changes.
 %  Hal reasons over individual action sequences (trans/4).
 %  Carla reasons over joint action sequences (transj/4).
 %
-%  AS1 and AS2 are mutually exclusive for a given (Init, Val):
-%    AS1 fires when the value attribute is 0 in Init (improvement possible).
-%    AS2 fires when the value attribute is 1 in Init (protection needed).
+%  Note: AS1 and AS2 are mutually exclusive for a given (Init, Val) pair,
+%  but not at the (Acts, Val) level: the same action sequence may appear
+%  under both schemes if it improves a value from one initial state while
+%  protecting it from a different initial state. The scheme tag records
+%  how the argument was constructed, not a clean partition.
 %
 %  @arg Ag    Agent: hal or carla
 %  @arg Acts  2-step action sequence
