@@ -136,7 +136,9 @@ handle_vaf_grounded(Aud) :-
 
 % --- Helpers ---
 
-% arg_json(+Ag, +Acts, +Val, -JSON) — argument with agent field.
+% arg_json(+Ag, +Acts, +Val, -JSON) — scheme-free variant.
+% Retained as a stable clause for any external callers that do not need
+% the scheme field. Not called by handle_args (which uses arg_json/5).
 % Action terms are converted to atoms so the JSON library can serialise them
 % (joint actions like buyH-comC are compound terms that would otherwise
 % cause a type error in reply_json).
