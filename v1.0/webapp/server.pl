@@ -40,11 +40,11 @@ handle_root(Request) :-
 % GET /args
 % All arguments for all agents.
 % Hal uses individual action sequences; Carla uses joint action sequences.
-% Each entry is {"agent": "...", "actions": [...], "value": "..."}.
+% Each entry is {"agent": "...", "actions": [...], "value": "...", "scheme": "as1"|"as2"}.
 handle_args(_Request) :-
     findall(J, (member(Ag, [hal, carla]),
-                argument(Ag, Acts, Val),
-                arg_json(Ag, Acts, Val, J)),
+                argument(Ag, Acts, Val, Scheme),
+                arg_json(Ag, Acts, Val, Scheme, J)),
             Args),
     reply_json(Args).
 
@@ -141,6 +141,10 @@ handle_vaf_grounded(Aud) :-
 % (joint actions like buyH-comC are compound terms that would otherwise
 % cause a type error in reply_json).
 arg_json(Ag, Acts, Val, json([agent=Ag, actions=ActAtoms, value=Val])) :-
+    maplist(action_to_atom, Acts, ActAtoms).
+
+% arg_json(+Ag, +Acts, +Val, +Scheme, -JSON) — argument with scheme field.
+arg_json(Ag, Acts, Val, Scheme, json([agent=Ag, actions=ActAtoms, value=Val, scheme=Scheme])) :-
     maplist(action_to_atom, Acts, ActAtoms).
 
 % action_to_atom(+Act, -Atom)
