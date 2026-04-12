@@ -495,10 +495,10 @@ function actsLabel(a) {
   return actions.map(translateAction).join(', ');
 }
 
-function arrowHtml() {
-  return MODE === 'english'
-    ? '<span class="arr-label">promotes</span>'
-    : '<span class="arr">→</span>';
+function arrowHtml(scheme) {
+  if (MODE !== 'english') return '<span class="arr">→</span>';
+  const label = scheme === 'as2' ? 'protects' : 'promotes';
+  return `<span class="arr-label">${label}</span>`;
 }
 
 function attacksLabel() {
@@ -548,7 +548,7 @@ function renderArgs() {
     const rows = list.map(a =>
       `<div class="arg-row">
          <span class="acts">${actsLabel(a)}</span>
-         ${arrowHtml()}
+         ${arrowHtml(a.scheme)}
          ${valChip(a.value)}
        </div>`
     ).join('');
