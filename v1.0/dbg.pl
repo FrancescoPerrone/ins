@@ -96,10 +96,15 @@
            eval(carla, S1, S2, Eval)),
           format("~w -> ~w : ~w~n", [S1, S2, Eval])).
 
-% 14. Carla's arguments (joint action sequences promoting her subscribed values)
+% 14. Carla's arguments (joint action sequences, both schemes)
 :- format("~n--- Carla's arguments ---~n"),
-   forall(argument(carla, Acts, Val),
-          format("argument(carla, ~w, ~w)~n", [Acts, Val])).
+   forall(argument(carla, Acts, Val, Scheme),
+          format("argument(carla, ~w, ~w, ~w)~n", [Acts, Val, Scheme])).
+
+% 15. All AS2 arguments (both agents)
+:- format("~n--- AS2 arguments (both agents) ---~n"),
+   forall((member(Ag, [hal, carla]), argument(Ag, Acts, Val, as2)),
+          format("argument(~w, ~w, ~w, as2)~n", [Ag, Acts, Val])).
 
 
 %           Listener
