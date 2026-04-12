@@ -107,7 +107,7 @@ State is a 6-tuple `[ih, mh, ah, ic, mc, ac]` where each attribute is binary
 | `[1,0,1,1,_,1]`   | Hal lacks money | freedomH      |
 | `[1,1,1,1,0,1]`   | Carla lacks money | freedomC    |
 
-**Hal's individual actions**: `buyH`, `takH`, `comH`, `losH`, `doNH`, `earnH`
+**Hal's individual actions**: `buyH`, `takH`, `comH`, `losH`, `doNH`
 **Hal's joint actions with Carla**: `buyH-comC`, `comH-takC`, `doNH-losC`, etc.
 **Values** (Hal subscribes to all): `lifeH`, `lifeC`, `freedomH`, `freedomC`
 
@@ -115,28 +115,20 @@ State is a 6-tuple `[ih, mh, ah, ic, mc, ac]` where each attribute is binary
 
 ## Current output (as of last commit)
 
-### Arguments (16 total, all 4 values covered)
+### Arguments (9 total; freedomH has no arguments — earnH removed as non-canonical)
 
 ```
 arg([buyH,doNH],  lifeH)
-arg([buyH,earnH], lifeH)
 arg([takH,comH],  lifeH)
 arg([takH,doNH],  lifeH)
 
 arg([comH,doNH],  lifeC)
-arg([comH,earnH], lifeC)
 arg([comH,losH],  lifeC)
 arg([doNH,comH],  lifeC)
 
-arg([doNH,earnH], freedomH)
-arg([earnH,doNH], freedomH)
-arg([earnH,losH], freedomH)
-
 arg([comH,doNH],  freedomC)
-arg([comH,earnH], freedomC)
 arg([comH,losH],  freedomC)
 arg([doNH,comH],  freedomC)
-arg([earnH,comH], freedomC)
 ```
 
 ### Dung extensions
@@ -168,6 +160,7 @@ arg([earnH,comH], freedomC)
 | `1d94f82`  | Added `extensions.pl`: Dung preferred/grounded/stable semantics |
 | `16cdab3`  | Added `vaf.pl`: VAF with 4 audiences, defeat relation, preferred/grounded extensions |
 | `ac73d8b`  | Added `lifeC`, `freedomH`, `freedomC` arguments; new initial states + `earnH` action; fixed preferred extension performance (linear maximality check) |
+| (current)  | Removed non-canonical `earnH` action — not defined in Atkinson & Bench-Capon (2006); `freedomH` now produces no arguments |
 | `66ada53`  | Fixed `extensions.pl` export warnings; fixed `demotes/4` hardcoded `hal` → `Ag`; removed duplicate `doNH-losC` clause in `jactions.pl` |
 
 ---

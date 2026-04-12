@@ -77,7 +77,6 @@
     .hdr .refs {
       margin-top: 0.5em;
       font-size: 0.75em;
-      font-style: italic;
       color: var(--text-dim);
     }
 
@@ -337,13 +336,46 @@
     .aud-sep { color: var(--text-dim); padding: 0 0.1em; }
 
     /* ── Misc ─────────────────────────────────────────────────── */
-    .empty { color: var(--text-dim); font-style: italic; }
-    .err   { color: #e05555; font-style: italic; }
+    .empty { color: var(--text-dim); }
+    .err   { color: #e05555; }
 
     .loading {
       color: var(--text-dim);
-      font-style: italic;
       padding: 0.5em 0;
+    }
+
+    /* ── Mode toggle ──────────────────────────────────────────── */
+    .mode-switch {
+      display: flex;
+      align-items: center;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-mid);
+      border-radius: 20px;
+      padding: 3px;
+      gap: 2px;
+      cursor: pointer;
+      user-select: none;
+      margin-left: auto;
+      margin-right: 1.5em;
+    }
+    .mode-opt {
+      padding: 0.28em 0.9em;
+      border-radius: 16px;
+      font-size: 0.71em;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      transition: color 0.15s, background 0.15s;
+    }
+    .mode-opt.active {
+      background: var(--bg-card);
+      color: var(--text-bright);
+      border: 1px solid var(--border);
+    }
+    .arr-label {
+      color: var(--text-dim);
+      padding: 0 0.5em;
+      font-size: 0.82em;
     }
 
     @media (max-width: 620px) {
@@ -362,10 +394,14 @@
 </header>
 
 <nav class="nav">
-  <a href="#sec-args">Arguments</a>
-  <a href="#sec-attacks">Attacks</a>
-  <a href="#sec-extensions">Extensions</a>
-  <a href="#sec-vaf">VAF</a>
+  <a href="#sec-args"       data-code="Arguments"  data-english="What Each Agent Proposes">Arguments</a>
+  <a href="#sec-attacks"    data-code="Attacks"     data-english="Conflicting Proposals">Attacks</a>
+  <a href="#sec-extensions" data-code="Extensions"  data-english="Accepted Sets">Extensions</a>
+  <a href="#sec-vaf"        data-code="VAF"         data-english="What Each Audience Endorses">VAF</a>
+  <div class="mode-switch" id="mode-switch">
+    <span class="mode-opt active" data-mode="code">Code</span>
+    <span class="mode-opt" data-mode="english">Plain English</span>
+  </div>
 </nav>
 
 <div class="main">
@@ -373,7 +409,7 @@
   <!-- ── Arguments ── -->
   <section class="sec" id="sec-args">
     <div class="sec-hdr">
-      <h2 class="sec-title">Arguments</h2>
+      <h2 class="sec-title" data-code="Arguments" data-english="What Each Agent Proposes">Arguments</h2>
       <span class="sec-count" id="args-count"></span>
     </div>
     <div id="args-body" class="loading">Loading…</div>
@@ -382,7 +418,7 @@
   <!-- ── Attacks ── -->
   <section class="sec" id="sec-attacks">
     <div class="sec-hdr">
-      <h2 class="sec-title">Attack Relation</h2>
+      <h2 class="sec-title" data-code="Attack Relation" data-english="Conflicting Proposals">Attack Relation</h2>
       <span class="sec-count" id="attacks-count"></span>
     </div>
     <div id="attacks-body" class="loading">Loading…</div>
@@ -391,7 +427,7 @@
   <!-- ── Extensions ── -->
   <section class="sec" id="sec-extensions">
     <div class="sec-hdr">
-      <h2 class="sec-title">Dung Extensions</h2>
+      <h2 class="sec-title" data-code="Dung Extensions" data-english="Accepted Sets of Proposals">Dung Extensions</h2>
     </div>
     <div id="extensions-body" class="loading">Loading…</div>
   </section>
@@ -399,7 +435,7 @@
   <!-- ── VAF ── -->
   <section class="sec" id="sec-vaf">
     <div class="sec-hdr">
-      <h2 class="sec-title">VAF by Audience</h2>
+      <h2 class="sec-title" data-code="VAF by Audience" data-english="What Each Audience Endorses">VAF by Audience</h2>
     </div>
     <div id="vaf-body" class="loading">Loading…</div>
   </section>
@@ -407,22 +443,72 @@
 </div>
 
 <script>
-/* ── helpers ─────────────────────────────────────────── */
+/* ── Mode ────────────────────────────────────────────────── */
+let MODE = 'code';
+const DATA = { args: null, attacks: null, extensions: null, vaf: null };
 
+/* ── Translation maps ────────────────────────────────────── */
+const VALUE_LABELS = {
+  lifeH:    "Hal's Life",
+  lifeC:    "Carla's Life",
+  freedomH: "Hal's Freedom",
+  freedomC: "Carla's Freedom",
+};
+
+const ACTION_LABELS = {
+  buyH:  'Buy insulin',
+  comH:  'Compensate Carla',
+  takH:  'Take insulin',
+  losH:  'Lose insulin',
+  doNH:  'Do nothing',
+  buyC:  'Buy insulin',
+  comC:  'Compensate Hal',
+  takC:  'Take insulin',
+  losC:  'Lose insulin',
+  doNC:  'Do nothing',
+};
+
+function translateValue(v) {
+  return MODE === 'english' && VALUE_LABELS[v] ? VALUE_LABELS[v] : v;
+}
+
+function translateAction(a) {
+  if (MODE !== 'english') return a;
+  if (typeof a === 'string' && a.includes('-')) {
+    return a.split('-').map(p => ACTION_LABELS[p] || p).join(' · ');
+  }
+  return ACTION_LABELS[a] || a;
+}
+
+function translateAudience(name) {
+  if (MODE !== 'english') return name;
+  return name.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+/* ── Helpers ─────────────────────────────────────────────── */
 function valChip(v) {
-  return `<span class="val ${v}">${v}</span>`;
+  return `<span class="val ${v}">${translateValue(v)}</span>`;
 }
 
-function acts(a) {
-  return Array.isArray(a.actions) ? a.actions.join(', ') : String(a.actions);
+function actsLabel(a) {
+  const actions = Array.isArray(a.actions) ? a.actions : [String(a.actions)];
+  return actions.map(translateAction).join(', ');
 }
 
-/* Inline representation of one argument: acts → chip */
+function arrowHtml() {
+  return MODE === 'english'
+    ? '<span class="arr-label">promotes</span>'
+    : '<span class="arr">→</span>';
+}
+
+function attacksLabel() {
+  return MODE === 'english' ? 'challenges' : 'attacks';
+}
+
 function argInline(a) {
-  return `<span class="acts">${acts(a)}</span><span class="arr">→</span>${valChip(a.value)}`;
+  return `<span class="acts">${actsLabel(a)}</span>${arrowHtml()}${valChip(a.value)}`;
 }
 
-/* Format an extension (array of args), or ∅ */
 function fmtExt(ext) {
   if (!ext || ext.length === 0) return '<span class="empty">∅</span>';
   return ext.map(a => `<div class="ext-arg">${argInline(a)}</div>`).join('');
@@ -435,25 +521,34 @@ function get(url) {
   });
 }
 
-function err(id, msg) {
+function showErr(id, msg) {
   document.getElementById(id).innerHTML = `<span class="err">Error: ${msg}</span>`;
 }
 
+/* ── Static label swap ───────────────────────────────────── */
+function applyStaticLabels() {
+  document.querySelectorAll('[data-code]').forEach(el => {
+    el.textContent = MODE === 'english' ? el.dataset.english : el.dataset.code;
+  });
+}
 
-/* ── Arguments ──────────────────────────────────────── */
-
-get('/args').then(args => {
+/* ── Arguments ───────────────────────────────────────────── */
+function renderArgs() {
+  const args = DATA.args;
   const hal   = args.filter(a => a.agent === 'hal');
   const carla = args.filter(a => a.agent === 'carla');
 
   document.getElementById('args-count').textContent =
     `${args.length} total · ${hal.length} Hal · ${carla.length} Carla`;
 
+  const halLabel   = MODE === 'english' ? 'Hal (acts on his own)' : 'Hal — individual';
+  const carlaLabel = MODE === 'english' ? 'Carla (acts with Hal)' : 'Carla — joint';
+
   function panel(list, ag, label) {
     const rows = list.map(a =>
       `<div class="arg-row">
-         <span class="acts">${acts(a)}</span>
-         <span class="arr">→</span>
+         <span class="acts">${actsLabel(a)}</span>
+         ${arrowHtml()}
          ${valChip(a.value)}
        </div>`
     ).join('');
@@ -468,44 +563,46 @@ get('/args').then(args => {
 
   document.getElementById('args-body').innerHTML =
     `<div class="args-grid">
-       ${panel(hal,   'hal',   'Hal — individual')}
-       ${panel(carla, 'carla', 'Carla — joint')}
+       ${panel(hal,   'hal',   halLabel)}
+       ${panel(carla, 'carla', carlaLabel)}
      </div>`;
+}
 
-}).catch(e => err('args-body', e.message));
-
-
-/* ── Attacks ─────────────────────────────────────────── */
-
-get('/attacks').then(data => {
-  document.getElementById('attacks-count').textContent =
-    `${data.length} pairs`;
+/* ── Attacks ─────────────────────────────────────────────── */
+function renderAttacks() {
+  const data = DATA.attacks;
+  document.getElementById('attacks-count').textContent = `${data.length} pairs`;
 
   const rows = data.map(a =>
     `<div class="attack-row">
        <div class="attack-side">
-         <span class="acts">${acts(a.attacker)}</span>
-         <span class="arr">→</span>${valChip(a.attacker.value)}
+         <span class="acts">${actsLabel(a.attacker)}</span>
+         ${arrowHtml()}${valChip(a.attacker.value)}
        </div>
        <div class="attack-mid">
-         <span>⟶</span><span class="lbl">attacks</span><span>⟶</span>
+         <span>⟶</span><span class="lbl">${attacksLabel()}</span><span>⟶</span>
        </div>
        <div class="attack-side right">
          ${valChip(a.attacked.value)}<span class="arr">←</span>
-         <span class="acts">${acts(a.attacked)}</span>
+         <span class="acts">${actsLabel(a.attacked)}</span>
        </div>
      </div>`
   ).join('');
 
   document.getElementById('attacks-body').innerHTML =
     `<div class="attacks-list">${rows || '<span class="empty">No attacks</span>'}</div>`;
+}
 
-}).catch(e => err('attacks-body', e.message));
+/* ── Extensions ──────────────────────────────────────────── */
+function renderExtensions() {
+  const data = DATA.extensions;
 
+  const activePanel = document.querySelector('#extensions-body .ext-panel.active')?.id || 'ep-grounded';
 
-/* ── Dung Extensions ─────────────────────────────────── */
+  const tabGrounded  = MODE === 'english' ? 'Core Consensus'        : 'Grounded';
+  const tabPreferred = MODE === 'english' ? 'Maximal Accepted Sets' : 'Preferred';
+  const tabStable    = MODE === 'english' ? 'Fully Consistent Sets' : 'Stable';
 
-get('/extensions').then(data => {
   const grHtml = `<div class="ext-list"><div class="ext-item">
     <div class="ext-args">${fmtExt(data.grounded)}</div></div></div>`;
 
@@ -521,17 +618,77 @@ get('/extensions').then(data => {
 
   document.getElementById('extensions-body').innerHTML =
     `<div class="ext-tabs">
-       <div class="ext-tab active"  data-panel="ep-grounded">Grounded</div>
-       <div class="ext-tab" data-panel="ep-preferred">Preferred (${data.preferred.length})</div>
-       <div class="ext-tab" data-panel="ep-stable">Stable (${data.stable.length})</div>
+       <div class="ext-tab" data-panel="ep-grounded">${tabGrounded}</div>
+       <div class="ext-tab" data-panel="ep-preferred">${tabPreferred} (${data.preferred.length})</div>
+       <div class="ext-tab" data-panel="ep-stable">${tabStable} (${data.stable.length})</div>
      </div>
-     <div id="ep-grounded"  class="ext-panel active">${grHtml}</div>
+     <div id="ep-grounded"  class="ext-panel">${grHtml}</div>
      <div id="ep-preferred" class="ext-panel">${extList(data.preferred)}</div>
      <div id="ep-stable"    class="ext-panel">${extList(data.stable)}</div>`;
 
-}).catch(e => err('extensions-body', e.message));
+  const restoreTab   = document.querySelector(`[data-panel="${activePanel}"]`) || document.querySelector('[data-panel="ep-grounded"]');
+  const restorePanel = document.getElementById(activePanel) || document.getElementById('ep-grounded');
+  restoreTab.classList.add('active');
+  restorePanel.classList.add('active');
+}
 
-/* Tab switching (delegated) */
+/* ── VAF ─────────────────────────────────────────────────── */
+function renderVAF() {
+  const results = DATA.vaf;
+
+  const cards = results.map(([pref, gnd]) => {
+    const orderHtml = pref.order
+      .map(valChip)
+      .join('<span class="ord-sep">›</span>');
+
+    const gndHtml  = `<div class="aud-ext-item">${fmtExt(gnd.grounded)}</div>`;
+    const prefHtml = pref.preferred.length === 0
+      ? '<div class="aud-ext-item empty">none</div>'
+      : pref.preferred.map(ext =>
+          `<div class="aud-ext-item">${
+            ext.map(argInline).join('<span class="aud-sep">·</span>')
+          }</div>`
+        ).join('');
+
+    const audName   = translateAudience(pref.audience);
+    const gndTitle  = MODE === 'english' ? 'Core Consensus'        : 'Grounded';
+    const prefTitle = MODE === 'english' ? 'Maximal Accepted Sets' : 'Preferred';
+
+    return `<div class="aud-card">
+      <div class="aud-card-hdr">
+        <div class="aud-name">${audName}</div>
+        <div class="aud-order">${orderHtml}</div>
+      </div>
+      <div class="aud-body">
+        <p class="aud-sub-title">${gndTitle}</p>
+        <div class="aud-ext-list">${gndHtml}</div>
+        <p class="aud-sub-title" style="margin-top:0.9em">
+          ${prefTitle} (${pref.preferred.length})
+        </p>
+        <div class="aud-ext-list">${prefHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('vaf-body').innerHTML = `<div class="vaf-grid">${cards}</div>`;
+}
+
+/* ── Toggle ──────────────────────────────────────────────── */
+document.getElementById('mode-switch').addEventListener('click', e => {
+  const btn = e.target.closest('.mode-opt');
+  if (!btn || btn.dataset.mode === MODE) return;
+  MODE = btn.dataset.mode;
+  document.querySelectorAll('.mode-opt').forEach(o =>
+    o.classList.toggle('active', o.dataset.mode === MODE)
+  );
+  applyStaticLabels();
+  if (DATA.args)       renderArgs();
+  if (DATA.attacks)    renderAttacks();
+  if (DATA.extensions) renderExtensions();
+  if (DATA.vaf)        renderVAF();
+});
+
+/* ── Tab switching (delegated) ───────────────────────────── */
 document.addEventListener('click', e => {
   const tab = e.target.closest('.ext-tab');
   if (!tab) return;
@@ -542,8 +699,21 @@ document.addEventListener('click', e => {
   document.getElementById(tab.dataset.panel).classList.add('active');
 });
 
+/* ── Fetch ───────────────────────────────────────────────── */
+get('/args').then(args => {
+  DATA.args = args;
+  renderArgs();
+}).catch(e => showErr('args-body', e.message));
 
-/* ── VAF ──────────────────────────────────────────────── */
+get('/attacks').then(data => {
+  DATA.attacks = data;
+  renderAttacks();
+}).catch(e => showErr('attacks-body', e.message));
+
+get('/extensions').then(data => {
+  DATA.extensions = data;
+  renderExtensions();
+}).catch(e => showErr('extensions-body', e.message));
 
 get('/vaf').then(audiences => {
   return Promise.all(
@@ -555,41 +725,9 @@ get('/vaf').then(audiences => {
     )
   );
 }).then(results => {
-  const cards = results.map(([pref, gnd]) => {
-    const orderHtml = pref.order
-      .map(valChip)
-      .join('<span class="ord-sep">›</span>');
-
-    const gndHtml = `<div class="aud-ext-item">${fmtExt(gnd.grounded)}</div>`;
-
-    const prefHtml = pref.preferred.length === 0
-      ? '<div class="aud-ext-item empty">none</div>'
-      : pref.preferred.map(ext =>
-          `<div class="aud-ext-item">${
-            ext.map(argInline).join('<span class="aud-sep">·</span>')
-          }</div>`
-        ).join('');
-
-    return `<div class="aud-card">
-      <div class="aud-card-hdr">
-        <div class="aud-name">${pref.audience}</div>
-        <div class="aud-order">${orderHtml}</div>
-      </div>
-      <div class="aud-body">
-        <p class="aud-sub-title">Grounded</p>
-        <div class="aud-ext-list">${gndHtml}</div>
-        <p class="aud-sub-title" style="margin-top:0.9em">
-          Preferred (${pref.preferred.length})
-        </p>
-        <div class="aud-ext-list">${prefHtml}</div>
-      </div>
-    </div>`;
-  }).join('');
-
-  document.getElementById('vaf-body').innerHTML =
-    `<div class="vaf-grid">${cards}</div>`;
-
-}).catch(e => err('vaf-body', e.message));
+  DATA.vaf = results;
+  renderVAF();
+}).catch(e => showErr('vaf-body', e.message));
 </script>
 </body>
 </html>

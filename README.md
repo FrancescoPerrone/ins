@@ -36,7 +36,7 @@ State is a 6-tuple `[ih, mh, ah, ic, mc, ac]` where each attribute is binary
 | 5        | `mc`      | Carla has money   |
 | 6        | `ac`      | Carla is alive    |
 
-**Hal's individual actions**: `buyH`, `takH`, `comH`, `losH`, `doNH`, `earnH`  
+**Hal's individual actions**: `buyH`, `takH`, `comH`, `losH`, `doNH`  
 **Joint actions (Hal × Carla)**: `buyH-comC`, `comH-takC`, `doNH-losC`, etc.  
 **Values**: `lifeH`, `lifeC`, `freedomH`, `freedomC`  
 **Hal** subscribes to all four values; **Carla** subscribes to `lifeC` and `freedomC`.
