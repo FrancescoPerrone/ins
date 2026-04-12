@@ -506,7 +506,7 @@ function attacksLabel() {
 }
 
 function argInline(a) {
-  return `<span class="acts">${actsLabel(a)}</span>${arrowHtml()}${valChip(a.value)}`;
+  return `<span class="acts">${actsLabel(a)}</span>${arrowHtml(a.scheme)}${valChip(a.value)}`;
 }
 
 function fmtExt(ext) {
