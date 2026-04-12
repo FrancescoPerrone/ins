@@ -1,16 +1,45 @@
-:- module(args, [arg/2, argument/3, attacks/2]).
+:- module(args, [arg/2, argument/3, argument/4, attacks/2]).
+:- use_module(library(pldoc)).
 
-%% argument(+Ag, -Acts, -Val)
+/** <module> Argument construction and attack relation.
+
+Implements AS1 (positive) and AS2 (negative) argument schemes from
+Atkinson & Bench-Capon (2006).
+
+  AS1 — In circumstances R, perform A, leading to S, realising G,
+         promoting value V.
+
+  AS2 — In circumstances R, perform A, to avoid S, which would
+         demote value V.
+
+argument/4 is the primary predicate; argument/3 and arg/2 are
+backward-compatible wrappers retained so attacks/2, extensions.pl,
+and vaf.pl need no changes.
+
+@author Francesco Perrone
+@license GPL
+*/
+
+
+%% argument(+Ag, -Acts, -Val, -Scheme) is nondet
 %
-%  Constructs arguments from an agent's perspective.
-%  An argument is a 2-step action sequence that promotes Val for Ag
-%  from some initial state.
+%  Constructs arguments for agent Ag.
+%  Scheme is as1 (promotes Val) or as2 (protects Val from demotion).
 %
 %  Hal reasons over individual action sequences (trans/4).
-%  Carla reasons over joint action sequences (transj/4), reflecting
-%  that her outcomes depend on coordinated action with Hal.
+%  Carla reasons over joint action sequences (transj/4).
 %
-argument(hal, Acts, Val):-
+%  AS1 and AS2 are mutually exclusive for a given (Init, Val):
+%    AS1 fires when the value attribute is 0 in Init (improvement possible).
+%    AS2 fires when the value attribute is 1 in Init (protection needed).
+%
+%  @arg Ag    Agent: hal or carla
+%  @arg Acts  2-step action sequence
+%  @arg Val   Value promoted or protected
+%  @arg Scheme as1 or as2
+
+% --- Hal AS1 ---
+argument(hal, Acts, Val, as1) :-
     setof(Acts-Val,
           Init^Next^(initial_state(Init),
                      trans(Init, Acts, Next, 2),
@@ -18,7 +47,22 @@ argument(hal, Acts, Val):-
           Pairs),
     member(Acts-Val, Pairs).
 
-argument(carla, Acts, Val):-
+% --- Hal AS2 ---
+argument(hal, Acts, Val, as2) :-
+    value(Val),
+    setof(Acts,
+          Init^Next^Alt^AltNext^(
+              initial_state(Init),
+              trans(Init, Acts, Next, 2),
+              \+ worse(hal, Init, Next, Val),
+              trans(Init, Alt, AltNext, 2),
+              worse(hal, Init, AltNext, Val)
+          ),
+          ActsList),
+    member(Acts, ActsList).
+
+% --- Carla AS1 ---
+argument(carla, Acts, Val, as1) :-
     setof(Acts-Val,
           Init^Next^(initial_state(Init),
                      transj(Init, Acts, Next, 2),
@@ -26,20 +70,43 @@ argument(carla, Acts, Val):-
           Pairs),
     member(Acts-Val, Pairs).
 
-%% arg(-Acts, -Val)
-%
-%  Backwards-compatible wrapper: Hal's arguments.
-%
-arg(Acts, Val) :- argument(hal, Acts, Val).
+% --- Carla AS2 ---
+argument(carla, Acts, Val, as2) :-
+    value(Val),
+    setof(Acts,
+          Init^Next^Alt^AltNext^(
+              initial_state(Init),
+              transj(Init, Acts, Next, 2),
+              \+ worse(carla, Init, Next, Val),
+              transj(Init, Alt, AltNext, 2),
+              worse(carla, Init, AltNext, Val)
+          ),
+          ActsList),
+    member(Acts, ActsList).
 
 
-%% attacks(+A, +B)
+%% argument(+Ag, -Acts, -Val) is nondet
+%
+%  Backward-compatible wrapper: strips the scheme tag.
+%  Retained so dbg.pl and other callers need minimal changes.
+%
+argument(Ag, Acts, Val) :- argument(Ag, Acts, Val, _).
+
+
+%% arg(-Acts, -Val) is nondet
+%
+%  Backward-compatible wrapper: Hal's arguments (both schemes).
+%  Used by attacks/2, extensions.pl, and vaf.pl — unchanged.
+%
+arg(Acts, Val) :- argument(hal, Acts, Val, _).
+
+
+%% attacks(+A, +B) is nondet
 %
 %  Argument A attacks argument B when they advocate different action
-%  sequences.  The attack relation is symmetric and agent-agnostic:
-%  any two arguments with distinct action sequences mutually attack.
+%  sequences. The attack relation is symmetric and scheme-agnostic.
 %
-attacks(arg(Acts, V1), arg(ActsX, V2)):-
+attacks(arg(Acts, V1), arg(ActsX, V2)) :-
     arg(Acts, V1),
     arg(ActsX, V2),
     Acts \= ActsX.
