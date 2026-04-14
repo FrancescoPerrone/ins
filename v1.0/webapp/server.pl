@@ -29,6 +29,8 @@ server(Port) :-
     http_server(http_dispatch, [port(Port)]),
     thread_get_message(_).
 
+:- initialization(server(8000), main).
+
 
 % GET /  — serves the HTML frontend (index.html in the same directory)
 handle_root(Request) :-

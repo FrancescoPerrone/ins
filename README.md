@@ -132,16 +132,10 @@ To query interactively:
 ### HTTP server with HTML frontend
 
 ```bash
-cd v1.0
-swipl -l webapp/test.pl
+swipl v1.0/webapp/server.pl
 ```
 
-Then start the server:
-
-```prolog
-?- server(8000).
-```
-
+The server starts automatically on port 8000.
 Visit **http://127.0.0.1:8000/** for the HTML frontend.
 
 #### API endpoints
@@ -170,11 +164,12 @@ v1.0/
 ├── jactions.pl     — joint action pre/post-conditions (performj/3)
 ├── trans.pl        — n-step transition functions: trans/4, transj/4
 ├── values.pl       — value system: sub/2, better/4, worse/4, eval/4
-├── args.pl         — argumentation: arg/2, argument/3, attacks/2
+├── args.pl         — argumentation: arg/2, argument/4 (AS1+AS2), attacks/2
 ├── extensions.pl   — Dung semantics: preferred, grounded, stable extensions
 ├── vaf.pl          — Value-Based Argumentation Framework (Bench-Capon 2003)
 ├── webapp/
-│   ├── test.pl     — HTTP server: JSON API + HTML frontend
+│   ├── server.pl   — HTTP server: JSON API + HTML frontend (auto-starts on port 8000)
+│   ├── test.pl     — legacy server file (kept for reference)
 │   └── index.html  — browser frontend (fetches from the JSON API)
 └── docs/solutions/
     ├── arg.sol                 — reference arg/2 output
@@ -187,25 +182,37 @@ v1.0/
 
 ## Current Output
 
-### Arguments — 16 per agent (32 total)
+### Arguments
 
-Hal's individual-action arguments cover all four values.
-Carla's joint-action arguments cover `lifeC` (her insulin crisis).
+Arguments are constructed under two schemes from Atkinson & Bench-Capon (2006):
 
-### Dung extensions (over Hal's arguments)
+- **AS1** — perform action A to *promote* value V (positive case)
+- **AS2** — perform action A to *avoid* an outcome that would *demote* value V (negative case)
+
+`argument/4` is the primary predicate; `arg/2` is a backward-compatible wrapper restricted
+to AS1 so that Dung extensions remain tractable (AS1 gives 9 arguments; AS2 adds more but
+is currently excluded from the brute-force powerset computation).
+
+Hal's 9 AS1 arguments cover `lifeH`, `lifeC`, and `freedomC`. **`freedomH` produces no
+arguments** because the only action that improves `mh` (`earnH`) was removed as non-canonical
+— it is not defined in the original Atkinson & Bench-Capon (2006) action set.
+
+Carla's arguments are constructed over joint action sequences (`transj/4`).
+
+### Dung extensions (over Hal's AS1 arguments)
 
 - **Grounded**: ∅ — the attack graph is too contentious for a non-empty least fixed point
-- **Preferred**: 12 singleton or compatible-pair extensions
-- **Stable**: same 12 sets
+- **Preferred**: singleton or compatible-pair extensions
+- **Stable**: same sets as preferred
 
 ### VAF preferred extensions by audience
 
 | Audience       | Preferred extensions                  |
 |----------------|---------------------------------------|
-| `life_first`   | 4 × lifeH singletons                 |
-| `selfish`      | 4 × lifeH singletons                 |
+| `life_first`   | lifeH singletons                     |
+| `selfish`      | lifeH singletons                     |
 | `altruistic`   | lifeC + freedomC compatible pairs    |
-| `freedom_first`| 3 × freedomH singletons              |
+| `freedom_first`| ∅ (no freedomH arguments)            |
 
 ---
 
