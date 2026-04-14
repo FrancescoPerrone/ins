@@ -97,10 +97,13 @@ argument(Ag, Acts, Val) :- argument(Ag, Acts, Val, _).
 
 %% arg(-Acts, -Val) is nondet
 %
-%  Backward-compatible wrapper: Hal's arguments (both schemes).
-%  Used by attacks/2, extensions.pl, and vaf.pl — unchanged.
+%  AS1-only wrapper used by attacks/2, extensions.pl, and vaf.pl.
+%  Restricted to AS1 to keep the argument set tractable for the
+%  brute-force powerset computation in extensions.pl (O(2^n)).
+%  AS2 arguments are exposed via argument/4 in the API but do not
+%  participate in Dung extensions or the attack relation.
 %
-arg(Acts, Val) :- argument(hal, Acts, Val, _).
+arg(Acts, Val) :- argument(hal, Acts, Val, as1).
 
 
 %% attacks(+A, +B) is nondet
