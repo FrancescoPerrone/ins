@@ -107,12 +107,13 @@ starts the HTTP server automatically without needing a manual `?- server(8000).`
 
 ---
 
-## 15. Resolve `freedomH` coverage gap — OPEN
+## 15. `freedomH` coverage gap — OPEN (kept open by design)
 
-`freedomH` currently produces no AS1 arguments because `earnH` (earn money) was
-removed as non-canonical — it is not in the Atkinson & Bench-Capon (2006) action set.
-Decide whether this is intentional (Hal simply cannot argue for his financial freedom
-in this domain) or whether a canonical action that promotes `mh` should be introduced.
+`freedomH` produces no AS1 arguments because no canonical action promotes `mh`. Adding
+one (e.g. `earnH`) would be non-canonical and raise the frame problem: which actions
+belong in the model is a prior modelling choice outside the formal system. This gap is
+kept open deliberately as a case study in the limits of logic-only moral reasoning —
+see `docs/notes/framing_problem.md` for the full argument and article material.
 
 ---
 
