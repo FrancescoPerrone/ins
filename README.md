@@ -82,10 +82,10 @@ Four named audiences are defined:
 
 | Audience       | Value order                              | Ethical stance                     |
 |----------------|------------------------------------------|------------------------------------|
-| `life_first`   | lifeH > lifeC > freedomH > freedomC     | Life always outweighs freedom      |
-| `selfish`      | lifeH > freedomH > lifeC > freedomC     | Hal's own values ranked above Carla's |
-| `altruistic`   | lifeC > lifeH > freedomC > freedomH     | Carla's wellbeing prioritised      |
-| `freedom_first`| freedomH > freedomC > lifeH > lifeC     | Freedom dominates life             |
+| `life_first`   | lifeH > lifeC > freedomH > freedomC     | Life always outweighs freedom; lifeH singletons |
+| `selfish`      | lifeH > freedomH > lifeC > freedomC     | Hal's values above Carla's; lifeH singletons    |
+| `altruistic`   | lifeC > lifeH > freedomC > freedomH     | Carla prioritised; lifeC+freedomC pairs         |
+| `freedom_first`| freedomH > freedomC > lifeH > lifeC     | Freedom dominates; lifeC+freedomC pairs         |
 
 ---
 
@@ -207,12 +207,15 @@ Carla's arguments are constructed over joint action sequences (`transj/4`).
 
 ### VAF preferred extensions by audience
 
-| Audience       | Preferred extensions                  |
-|----------------|---------------------------------------|
-| `life_first`   | lifeH singletons                     |
-| `selfish`      | lifeH singletons                     |
-| `altruistic`   | lifeC + freedomC compatible pairs    |
-| `freedom_first`| ∅ (no freedomH arguments)            |
+| Audience       | Preferred extensions                         |
+|----------------|----------------------------------------------|
+| `life_first`   | 3 lifeH singletons                          |
+| `selfish`      | 3 lifeH singletons                          |
+| `altruistic`   | 3 lifeC + freedomC compatible pairs         |
+| `freedom_first`| 3 lifeC + freedomC compatible pairs         |
+
+`freedom_first` gives lifeC+freedomC pairs (not ∅): under this audience freedomC > lifeH,
+so freedomC arguments defeat the lifeH arguments, leaving the compatible pairs as extensions.
 
 ---
 

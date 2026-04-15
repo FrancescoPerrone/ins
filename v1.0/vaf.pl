@@ -11,7 +11,8 @@
 ]).
 
 :- use_module(args).
-:- use_module(extensions, [all_arguments/1, powerset/2, is_subset/2]).
+:- use_module(extensions, [all_arguments/1, preferred_ext_for/3,
+                            powerset/2, is_subset/2]).
 
 /** <module> Value-Based Argumentation Framework (VAF)
 
@@ -123,15 +124,11 @@ vaf_admissible(Set, Aud) :-
 %
 %  Ext is a preferred extension under Audience: a maximal admissible
 %  set with respect to the VAF defeat relation.
-%  Enumerates all preferred extensions on backtracking.
+%  Uses labelling-based search via preferred_ext_for/3.
 %
 vaf_preferred_extension(Ext, Aud) :-
     all_arguments(AllArgs),
-    powerset(AllArgs, Ext),
-    vaf_admissible(Ext, Aud),
-    \+ (member(X, AllArgs),
-        \+ member(X, Ext),
-        vaf_admissible([X|Ext], Aud)).
+    preferred_ext_for(AllArgs, [A,B]>>defeats(A,B,Aud), Ext).
 
 
 %% vaf_grounded_extension(-Ext:list, +Audience:atom) is det

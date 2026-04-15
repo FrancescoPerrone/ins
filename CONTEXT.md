@@ -155,7 +155,7 @@ was removed as non-canonical. This is an open design question.
 
 Generated via `argument(hal, Acts, Val, as2)`. These argue *against* actions by showing
 they would demote a value. Currently excluded from `arg/2`, so they do not participate
-in Dung extensions or the attack relation (kept tractable: O(2^9) instead of O(2^n)).
+in Dung extensions or the attack relation (a deliberate scope decision — see below).
 
 ### Dung extensions (over AS1 arguments)
 
@@ -167,10 +167,183 @@ in Dung extensions or the attack relation (kept tractable: O(2^9) instead of O(2
 
 | Audience       | Value order                         | Preferred extensions              |
 |----------------|-------------------------------------|-----------------------------------|
-| `life_first`   | lifeH > lifeC > freedomH > freedomC | lifeH singletons                 |
-| `selfish`      | lifeH > freedomH > lifeC > freedomC | lifeH singletons                 |
-| `altruistic`   | lifeC > lifeH > freedomC > freedomH | lifeC + freedomC pairs           |
-| `freedom_first`| freedomH > freedomC > lifeH > lifeC | ∅ (no freedomH arguments)        |
+| `life_first`   | lifeH > lifeC > freedomH > freedomC | 3 lifeH singletons               |
+| `selfish`      | lifeH > freedomH > lifeC > freedomC | 3 lifeH singletons               |
+| `altruistic`   | lifeC > lifeH > freedomC > freedomH | 3 lifeC + freedomC pairs         |
+| `freedom_first`| freedomH > freedomC > lifeH > lifeC | 3 lifeC + freedomC pairs         |
+
+Note: `freedom_first` gives lifeC+freedomC pairs (not ∅): freedomC > lifeH in this audience,
+so freedomC args defeat lifeH args, leaving the lifeC+freedomC compatible pairs as extensions.
+
+---
+
+---
+
+## Implementation notes: extension algorithm
+
+### Problem 1 — Original approach: brute-force powerset (O(2^n))
+
+The first implementation of `preferred_extension/1` in `extensions.pl` used a generate-and-test
+strategy over the powerset of all arguments:
+
+```prolog
+preferred_extension(Ext) :-
+    all_arguments(AllArgs),
+    powerset(AllArgs, Ext),
+    admissible(Ext),
+    \+ (powerset(AllArgs, Bigger),
+        is_subset(Ext, Bigger), Ext \= Bigger,
+        admissible(Bigger)).
+```
+
+This is correct but has exponential time complexity O(2^n) in the number of arguments.
+With 9 AS1 arguments it was barely tractable; including AS2 would bring the argument set
+to ~35 (AS1 + AS2 for Hal + Carla's joint actions), making the brute-force approach unusable.
+
+### Solution — Caminada (2006) complete-labelling search
+
+The preferred extension algorithm was rewritten to use the *complete labelling* characterisation
+from Caminada (2006). A labelling is a function L : Args → {in, out, undec} satisfying:
+
+- L(a) = **in**   ↔  every argument b such that b attacks a has L(b) = out
+- L(a) = **out**  ↔  some argument b such that b attacks a has L(b) = in
+- L(a) = **undec** ↔  neither condition above holds
+
+A *preferred* labelling is a complete labelling with a maximal in-set. The in-set of any
+preferred labelling is exactly a preferred extension.
+
+**Algorithm** (`preferred_ext_raw/3`):
+
+1. Initialise all arguments as `undec`.
+2. **Constraint propagation** (`lb_propagate/4`): repeatedly apply forced-label rules until
+   fixed point:
+   - If all attackers of a are out → force a to `in`
+   - If some attacker of a is in → force a to `out`
+3. **Branching search** (`lb_extend/5`): for each remaining `undec` argument (in a fixed
+   enumeration order), nondeterministically:
+   - Option A: force it to `in` and propagate (then continue with the rest)
+   - Option B: leave it as `undec` (continue without forcing)
+4. **Completeness check** (`lb_is_complete/3`): accept the labelling only if every in-label
+   and out-label satisfies its completeness condition. Reject otherwise.
+5. **Maximality check** (`lb_can_extend_in/3`): reject if any `undec` argument could be
+   moved to `in` without contradiction (i.e., the in-set is not maximal).
+6. Collect all accepted in-sets, deduplicate via `sort/2`, and enumerate.
+
+Time complexity is O(2^k) where k is the number of genuinely ambiguous (undec after
+propagation) arguments — typically much smaller than n.
+
+### Problem 2 — Duplicate preferred extensions
+
+Two different branching paths can produce the same in-set: path (1) forces A=in then B=in;
+path (2) leaves A=undec but later forces B=in, after which propagation forces A=in too.
+Both paths yield {A, B} as the in-set.
+
+**Fix**: wrap `preferred_ext_for/3` with `findall(..., preferred_ext_raw(...), Exts0), sort(Exts0, Exts)` to deduplicate before enumerating.
+
+### Problem 3 — VAF: asymmetric defeat and `lb_contradicted`
+
+The original `lb_contradicted/2` only checked one defeat direction:
+
+```prolog
+lb_contradicted(AP, L) :-
+    member(A-in, L), member(B-in, L), call(AP, B, A), !.
+```
+
+This checked "B defeats A" but not "A defeats B". For Dung's symmetric attack relation
+this was sufficient, but VAF defeat is *asymmetric*: `defeats(A, B, Aud)` can be true
+while `defeats(B, A, Aud)` is false (when A promotes a higher-valued value than B).
+
+`lb_force_one` only updates `undec` arguments, so a previously-`in` argument is not
+retroactively set to `out` when a newly-`in` argument defeats it. Without checking both
+directions, a labelling could contain two `in` arguments where one defeats the other,
+which violates conflict-freeness.
+
+**Fix**: check both directions:
+```prolog
+lb_contradicted(AP, L) :-
+    member(A-in, L), member(B-in, L),
+    (call(AP, B, A) ; call(AP, A, B)), !.
+```
+
+### Problem 4 — VAF: incomplete labellings accepted as preferred (`lb_is_complete`)
+
+This was the subtlest bug. Under VAF with asymmetric defeat, the algorithm could reach a
+labelling such as:
+
+```
+lifeH_arg1 = in,  lifeH_arg2 = undec,  lifeC_arg = undec
+```
+
+Under the `life_first` audience [lifeH > lifeC > freedomH > freedomC]:
+- `defeats(lifeC_arg, lifeH_arg1, life_first)` = false (lifeC cannot defeat lifeH)
+- So `lb_some_attacker_in` for `lifeC_arg` fails: there is an `in` attacker of `lifeC_arg`
+  (namely `lifeH_arg1`) but it is a *defeater* only if... wait, the issue is the reverse.
+  `lifeH_arg1` *defeats* `lifeC_arg`, but `lb_force_one` checks whether any *attacker* of
+  an `undec` argument is `in`. Under VAF, `call(AP, lifeH_arg1, lifeC_arg)` =
+  `defeats(lifeH_arg1, lifeC_arg, life_first)` = true (lifeH defeats lifeC). So propagation
+  SHOULD force `lifeC_arg` to `out`.
+
+In practice the real issue was: the `lb_can_extend_in` check (used to identify non-maximal
+labellings) was erroneously passing for labellings where `in`-labelled args still had
+`undec` defeaters. These are *not* valid complete labellings, because completeness requires
+`in(a) → all defeaters of a are out`. A labelling with `in(A)` and `undec(defeater-of-A)`
+violates this and should be rejected.
+
+**Fix**: add `lb_is_complete/3` before the maximality check in `preferred_ext_raw`:
+
+```prolog
+lb_is_complete(AP, AllArgs, L) :-
+    forall(member(A-in,  L), lb_all_attackers_out(AP, AllArgs, A, L)),
+    forall(member(A-out, L), lb_some_attacker_in(AP, AllArgs, A, L)).
+```
+
+This ensures every accepted labelling is a genuine complete labelling before testing
+for maximality.
+
+### Problem 5 — VAF: module context for the defeat predicate
+
+`preferred_ext_for/3` is defined in `extensions.pl` and accepts a defeat predicate as an
+argument (an atom or term callable via `call/3`). When `vaf.pl` first passed `defeats/3`
+by name:
+
+```prolog
+vaf_preferred_extension(Ext, Aud) :-
+    all_arguments(AllArgs),
+    preferred_ext_for(AllArgs, vaf_defeat_for(Aud), Ext).
+```
+
+the predicate was called from *inside* `extensions.pl` via `call(vaf_defeat_for(Aud), A, B)`.
+SWI-Prolog resolves this call in the `extensions` module context, where `vaf_defeat_for/3`
+is not visible. The call silently failed, producing no extensions.
+
+**Fix**: use a YALL (Yet Another Lambda Library) lambda closure, which captures the calling
+module context at the point of creation (inside `vaf.pl`):
+
+```prolog
+vaf_preferred_extension(Ext, Aud) :-
+    all_arguments(AllArgs),
+    preferred_ext_for(AllArgs, [A,B]>>defeats(A,B,Aud), Ext).
+```
+
+The closure `[A,B]>>defeats(A,B,Aud)` is evaluated in `vaf` module context regardless of
+where `call/3` is executed, so `defeats/3` is found correctly.
+
+### Correctness of the final VAF results
+
+The corrected algorithm produces these preferred extensions, which agree with the theoretical
+expectations of Bench-Capon (2003):
+
+| Audience       | Value order                          | Preferred extensions             | Reasoning |
+|----------------|--------------------------------------|----------------------------------|-----------|
+| `life_first`   | lifeH > lifeC > freedomH > freedomC  | 3 lifeH singletons               | lifeH args defeat all others; lifeH args defeat each other, so only one can be in |
+| `selfish`      | lifeH > freedomH > lifeC > freedomC  | 3 lifeH singletons               | same as life_first for available args (no freedomH args) |
+| `altruistic`   | lifeC > lifeH > freedomC > freedomH  | 3 lifeC+freedomC pairs           | lifeC/freedomC defeat lifeH; compatible-action pairs are conflict-free |
+| `freedom_first`| freedomH > freedomC > lifeH > lifeC  | 3 lifeC+freedomC pairs           | freedomC > lifeH so freedomC args defeat lifeH args (previously wrong: stated ∅) |
+
+The `freedom_first` result was incorrectly stated as ∅ in an earlier version of this document
+(based on the buggy brute-force algorithm). The correct result is lifeC+freedomC pairs:
+since no freedomH arguments exist, the freedomC args (next in preference) defeat the lifeH args,
+and the three compatible-action pairs form the preferred extensions.
 
 ---
 
@@ -195,7 +368,8 @@ in Dung extensions or the attack relation (kept tractable: O(2^9) instead of O(2
 | `820e56d`  | Updated `dbg.pl` to use `argument/4` and show AS2 |
 | `58d0409`  | Passed scheme to argInline for extensions/VAF panels |
 | `fb184dd`  | Restricted `arg/2` to AS1 only (extensions tractability) |
-| `(current)`| Added `initialization` directive to `server.pl` — now auto-starts |
+| `b8f44bf`  | Added `initialization` directive to `server.pl` — now auto-starts |
+| `(current)`| Replaced powerset with Caminada labelling; fixed VAF correctness bugs |
 
 ---
 
@@ -205,9 +379,10 @@ in Dung extensions or the attack relation (kept tractable: O(2^9) instead of O(2
    (Hal simply cannot argue for his financial freedom in this domain) or should a new
    action be introduced from the literature?
 
-2. **AS2 in extensions** — AS2 arguments are built but excluded from `arg/2` and
-   therefore from Dung extensions and VAF. Integrating them would require either
-   a smarter extension algorithm (not brute-force powerset) or a deliberate scope decision.
+2. **AS2 in extensions** — AS2 arguments are built but excluded from `arg/2` by design.
+   The labelling algorithm (O(2^k) in ambiguous args) is no longer a blocker; including AS2
+   is a deliberate scope decision. Change `arg(Acts,Val) :- argument(hal,Acts,Val,as1).`
+   to `argument(hal,Acts,Val,_).` to enable this.
 
 3. **Carla's AS2 arguments** — currently only AS1 is checked for Carla
    (`argument(carla, Acts, Val, as1)`). AS2 for joint actions not yet verified.
