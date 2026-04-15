@@ -162,3 +162,66 @@ to:
 The labelling algorithm is already O(2^k) in the number of ambiguous arguments, which is
 much better than O(2^n) powerset, but should still be verified for performance with ~26 args.
 This is a deliberate design decision, not a technical blocker.
+
+---
+
+## 18. Add dialectical proof / credulous acceptance query (credQA) — OPEN
+
+### Why we want this
+
+Marek Sergot sent us two files:
+
+- `articles/sergot/CayrolDoutreMengin.pdf` — Cayrol, Doutre & Mengin (2003), "On Decision
+  Problems Related to the Preferred Semantics for Argumentation Frameworks", *J. Logic
+  Computat.* 13(3):377–402. Same journal and year as Bench-Capon's VAF paper.
+- `articles/sergot/templates/accepted_arg.pl` — his own SWI-Prolog implementation of the
+  `credQA` algorithm from that paper, with `articles/sergot/templates/test_arg.pl` as the
+  test harness (the exact framework AF₁ from the paper's Example 2.2).
+
+This is not background reading. It is a design suggestion.
+
+The paper addresses a fundamentally different question from the one our current implementation
+answers. Where we enumerate *all* preferred extensions, it asks:
+
+- **Credulous acceptance**: is argument *a* in *at least one* preferred extension? (NP-complete)
+- **Sceptical acceptance**: is argument *a* in *every* preferred extension? (Π₂ᵖ-complete)
+
+And rather than computing extension sets, it answers these questions through **dialectical
+proofs** — formalised as a two-player dialogue between a PROponent and an OPPonent. PRO tries
+to defend the argument; OPP tries to refute it. A φ₁-proof is a winning dialogue for PRO: it
+terminates, PRO plays last, and PRO's argument set is admissible. The algorithm returns not
+just yes/no but the full dialogue sequence as a justification.
+
+There are three specific reasons to add this to the INS system:
+
+1. **More efficient for querying.** You do not need to enumerate all extensions to answer
+   a single acceptance query. For practical use ("should Hal do X?") this is faster and
+   more direct than computing the whole extension lattice.
+
+2. **Directly maps onto the moral reasoning scenario.** Hal's deliberation *is* a dialogue.
+   Hal (PRO) argues for an action; the opponent raises the value-conflict objections. The
+   φ₁-proof structure captures exactly how a moral agent defends a practical conclusion
+   against challenge. The proof is not just a computational artefact — it is a model of
+   the deliberative process itself.
+
+3. **Natural and significant article contribution.** The current system computes *what* is
+   acceptable. Adding credQA shows *why* a specific argument is acceptable, in the form of a
+   structured dialogue readable as a practical moral argument. Combining AATS + VAF +
+   dialectical justification in a single Prolog system, grounded in a concrete ethical
+   dilemma, would be a strong contribution.
+
+### What is needed for implementation
+
+The `accepted_arg.pl` template uses a flat interface: `argument(a)` (unary) and
+`attacks(k,b)` (binary with atom arguments). Our system uses structured terms:
+`arg([buyH,doNH], lifeH)` as arguments and `attacks(arg(...), arg(...))`. The algorithm
+itself does not need to change. A small adapter module (e.g. `credulous.pl`) would:
+
+- expose `credQA(+Arg, -Proof)` using our `arg/2` and `attacks/2` directly (since
+  `attacks/2` already has the right arity and our arg terms can be passed through as-is)
+- extend to `vaf_credQA(+Arg, +Audience, -Proof)` using `defeats/3` in place of `attacks/2`
+  so that the dialogue respects the audience's value ordering
+
+The proof term `(Seq, Pro)` returned by `credQA` should also be exposed via the HTTP API
+(e.g. `GET /credulous/:arg` and `GET /vaf/:audience/credulous/:arg`) so the frontend can
+display the dialogue visually.
