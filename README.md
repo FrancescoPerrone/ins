@@ -13,7 +13,8 @@ Work originally started in 2013 in collaboration with
 on normative systems, deontic logic, and action formalisms underpins the formal
 structure used here.  The system has since been completed and extended with full
 Dung (1995) argumentation semantics, a VAF layer with four named audiences, joint
-action reasoning from Carla's perspective, and an HTTP API with an HTML frontend.
+action reasoning from Carla's perspective, dialectical proof via the φ₁-proof theory
+of Cayrol, Doutre & Mengin (2003), and an HTTP API with an HTML frontend.
 
 ---
 
@@ -114,19 +115,23 @@ cd v1.0
 swipl -l dbg.pl
 ```
 
-This loads all modules, starts the PlDoc documentation server, and runs 14 test
-sections covering states, transitions, value evaluations, arguments (Hal and Carla),
-attacks, grounded/preferred/stable Dung extensions, and VAF extensions per audience.
+This loads all modules, starts the PlDoc documentation server, and runs 18 test
+sections covering states, transitions, value evaluations, arguments (Hal and Carla,
+both AS1 and AS2), attacks, grounded/preferred/stable Dung extensions, VAF extensions
+per audience, and dialectical proofs (credulous/sceptical acceptance).
 
 To query interactively:
 
 ```prolog
-?- arg(Acts, Val).                            % Hal's arguments
-?- argument(carla, Acts, Val).                % Carla's arguments
-?- attacks(A1, A2).                           % attack pairs
-?- preferred_extension(Ext).                  % Dung preferred extensions
-?- vaf_preferred_extension(Ext, altruistic).  % VAF for a specific audience
-?- eval(hal, S1, S2, Eval).                   % value evaluation for a transition
+?- arg(Acts, Val).                                    % Hal's AS1+AS2 arguments (35)
+?- argument(carla, Acts, Val, Scheme).                % Carla's arguments (joint actions)
+?- attacks(A1, A2).                                   % attack pairs
+?- preferred_extension(Ext).                          % Dung preferred extensions (13)
+?- vaf_preferred_extension(Ext, altruistic).          % VAF for a specific audience
+?- credQA(arg([buyH,doNH], lifeH), (Seq, Pro)).       % φ₁ dialectical proof
+?- vaf_credQA(arg([comH,doNH], lifeC), altruistic, Proof). % VAF credulous acceptance
+?- sceptically_accepted(Arg).                         % sceptical acceptance (none)
+?- eval(hal, S1, S2, Eval).                           % value evaluation for a transition
 ```
 
 ### HTTP server with HTML frontend
@@ -140,15 +145,18 @@ Visit **http://127.0.0.1:8000/** for the HTML frontend.
 
 #### API endpoints
 
-| Method | Path                      | Description                                         |
-|--------|---------------------------|-----------------------------------------------------|
-| GET    | `/`                       | HTML frontend                                       |
-| GET    | `/args`                   | All arguments (Hal + Carla), with `agent` field     |
-| GET    | `/attacks`                | All attack pairs between arguments                  |
-| GET    | `/extensions`             | Dung grounded, preferred, and stable extensions     |
-| GET    | `/vaf`                    | List all named audiences and their value orderings  |
-| GET    | `/vaf/:audience`          | VAF preferred extensions for a named audience       |
-| GET    | `/vaf/:audience/grounded` | VAF grounded extension for a named audience         |
+| Method | Path                           | Description                                         |
+|--------|--------------------------------|-----------------------------------------------------|
+| GET    | `/`                            | HTML frontend                                       |
+| GET    | `/args`                        | All arguments (Hal + Carla), with `agent` field     |
+| GET    | `/attacks`                     | All attack pairs between arguments                  |
+| GET    | `/extensions`                  | Dung grounded, preferred, and stable extensions     |
+| GET    | `/vaf`                         | List all named audiences and their value orderings  |
+| GET    | `/vaf/:audience`               | VAF preferred extensions for a named audience       |
+| GET    | `/vaf/:audience/grounded`      | VAF grounded extension for a named audience         |
+| GET    | `/credulous`                   | All credulously accepted arguments with φ₁ proofs   |
+| GET    | `/credulous/sceptical`         | All sceptically accepted arguments                  |
+| GET    | `/credulous/vaf/:audience`     | VAF credulous acceptance for a named audience       |
 
 All API endpoints return JSON.  Unknown audience names return HTTP 404.
 
@@ -158,20 +166,26 @@ All API endpoints return JSON.  Unknown audience names return HTTP 404.
 
 ```
 v1.0/
-├── dbg.pl          — entry point: loads all modules, runs 14 test sections
+├── dbg.pl          — entry point: loads all modules, runs 18 test sections
 ├── states.pl       — state representation: agents, attributes, domains
 ├── actions.pl      — individual action pre/post-conditions (perform/3)
 ├── jactions.pl     — joint action pre/post-conditions (performj/3)
 ├── trans.pl        — n-step transition functions: trans/4, transj/4
 ├── values.pl       — value system: sub/2, better/4, worse/4, eval/4
 ├── args.pl         — argumentation: arg/2, argument/4 (AS1+AS2), attacks/2
-├── extensions.pl   — Dung semantics: preferred, grounded, stable extensions
+├── extensions.pl   — Dung semantics: preferred, grounded, stable (Caminada labelling)
 ├── vaf.pl          — Value-Based Argumentation Framework (Bench-Capon 2003)
+├── credulous.pl    — φ₁-proof / credulous & sceptical acceptance (CDM 2003)
 ├── webapp/
 │   ├── server.pl   — HTTP server: JSON API + HTML frontend (auto-starts on port 8000)
 │   ├── test.pl     — legacy server file (kept for reference)
 │   └── index.html  — browser frontend (fetches from the JSON API)
-└── docs/solutions/
+docs/
+├── notes/
+│   ├── framing_problem.md              — freedomH gap as case study (item 15)
+│   ├── as2_in_extensions.md            — AS2 inclusion: problem, solution, results (item 17)
+│   └── credulous_sceptical_acceptance.md — dialectical proof: results and interpretation (item 18)
+└── solutions/
     ├── arg.sol                 — reference arg/2 output
     ├── arg2.sol                — same
     ├── res.dbg                 — arg/2 output with full state traces
@@ -189,33 +203,50 @@ Arguments are constructed under two schemes from Atkinson & Bench-Capon (2006):
 - **AS1** — perform action A to *promote* value V (positive case)
 - **AS2** — perform action A to *avoid* an outcome that would *demote* value V (negative case)
 
-`argument/4` is the primary predicate; `arg/2` is a backward-compatible wrapper restricted
-to AS1 so that Dung extensions remain tractable (AS1 gives 9 arguments; AS2 adds more but
-is currently excluded from the brute-force powerset computation).
+`argument/4` generates both schemes; `arg/2` includes all of Hal's arguments (AS1 + AS2),
+giving **35 arguments** in total. Carla's arguments are constructed over joint action
+sequences (`transj/4`) and accessed via `argument(carla, ...)`.
 
-Hal's 9 AS1 arguments cover `lifeH`, `lifeC`, and `freedomC`. **`freedomH` produces no
-arguments** because the only action that improves `mh` (`earnH`) was removed as non-canonical
-— it is not defined in the original Atkinson & Bench-Capon (2006) action set.
+**`freedomH` produces no AS1 arguments** because no canonical action in the Atkinson &
+Bench-Capon (2006) action set positively promotes `mh`. AS2 arguments for `freedomH` do
+exist (defending against demotion), but there is no forward-looking case for financial
+freedom. This is kept open as a deliberate case study in the frame problem — see
+`docs/notes/framing_problem.md`.
 
-Carla's arguments are constructed over joint action sequences (`transj/4`).
+### Dung extensions (over 35 AS1+AS2 arguments)
 
-### Dung extensions (over Hal's AS1 arguments)
+- **Grounded**: `[]` — the attack graph is maximally contentious; no argument is unassailable
+- **Preferred**: 13 extensions
+- **Stable**: subset of preferred
 
-- **Grounded**: ∅ — the attack graph is too contentious for a non-empty least fixed point
-- **Preferred**: singleton or compatible-pair extensions
-- **Stable**: same sets as preferred
+### VAF preferred extensions by audience (AS1+AS2)
 
-### VAF preferred extensions by audience
+| Audience       | Value order                              | Preferred extensions |
+|----------------|------------------------------------------|----------------------|
+| `life_first`   | lifeH > lifeC > freedomH > freedomC     | 10                   |
+| `selfish`      | lifeH > freedomH > lifeC > freedomC     | 10                   |
+| `altruistic`   | lifeC > lifeH > freedomC > freedomH     | 10                   |
+| `freedom_first`| freedomH > freedomC > lifeH > lifeC     | 6                    |
 
-| Audience       | Preferred extensions                         |
-|----------------|----------------------------------------------|
-| `life_first`   | 3 lifeH singletons                          |
-| `selfish`      | 3 lifeH singletons                          |
-| `altruistic`   | 3 lifeC + freedomC compatible pairs         |
-| `freedom_first`| 3 lifeC + freedomC compatible pairs         |
+`freedom_first` gives 6 (not 10): AS2 `freedomH` arguments participate under this audience
+but only defensively — no AS1 `freedomH` arguments exist (framing problem, item 15).
 
-`freedom_first` gives lifeC+freedomC pairs (not ∅): under this audience freedomC > lifeH,
-so freedomC arguments defeat the lifeH arguments, leaving the compatible pairs as extensions.
+### Credulous and sceptical acceptance
+
+| Query                   | Result      | Interpretation                            |
+|-------------------------|-------------|-------------------------------------------|
+| Credulously accepted    | 35 / 35     | Every argument appears in some preferred extension |
+| Sceptically accepted    | 0 / 35      | No argument is in every preferred extension        |
+
+The framework is **maximally contentious**: every argument can be defended (nothing is
+indefensible) and every argument can be challenged (nothing is unassailable). This is
+consistent with the empty grounded extension — a known result from Dung (1995).
+
+Credulous acceptance is witnessed by a **φ₁-proof**: a structured dialogue in which a
+PROponent defends the argument against all OPPonent challenges. Some arguments are
+self-defending (one-move proof — OPP has no legal reply); others require a chain of
+supporting moves. The proof structure encodes the dialectical complexity of the argument.
+See `docs/notes/credulous_sceptical_acceptance.md` for the full interpretation.
 
 ---
 
@@ -227,6 +258,13 @@ Springer Berlin Heidelberg.
 
 Bench-Capon, T. (2003). Persuasion in practical argument using value-based
 argumentation frameworks. *Journal of Logic and Computation*, 13(3), 429–448.
+
+Caminada, M. (2006). On the issue of reinstatement in argumentation. In *Logics in
+Artificial Intelligence: JELIA 2006*, LNCS 4160, pp. 111–123. Springer.
+
+Cayrol, C., Doutre, S., & Mengin, J. (2003). On decision problems related to the
+preferred semantics for argumentation frameworks. *Journal of Logic and Computation*,
+13(3), 377–402.
 
 Chorley, A., Bench-Capon, T., & McBurney, P. (2006). Automating argumentation for
 deliberation in cases of conflict of interest. In *Computational Models of Argument:
