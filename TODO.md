@@ -153,16 +153,15 @@ motivation. AS2 is still generated and displayed by `argument/4` and the `/args`
 
 ---
 
-## 17. Enable AS2 in extensions (optional) — OPEN
+## ~~17. Enable AS2 in extensions~~ — DONE
 
-To include AS2 arguments in Dung extensions and VAF, change `arg/2` in `args.pl` from:
-  `arg(Acts, Val) :- argument(hal, Acts, Val, as1).`
-to:
-  `arg(Acts, Val) :- argument(hal, Acts, Val, _).`
+One-line change in `args.pl`: `argument(hal, Acts, Val, _)` (was `as1` only). Prerequisite
+was item 16 (labelling algorithm). Results: 9→35 args, 6→13 Dung preferred exts, VAF
+extensions roughly tripled. `freedom_first` gives 6 (not 10): AS2 `freedomH` args now
+participate but only defensively — no AS1 `freedomH` args exist (framing problem, item 15).
 
-The labelling algorithm is already O(2^k) in the number of ambiguous arguments, which is
-much better than O(2^n) powerset, but should still be verified for performance with ~26 args.
-This is a deliberate design decision, not a technical blocker.
+Full problem description, results table, and theoretical significance for the article:
+→ `docs/notes/as2_in_extensions.md`
 
 ---
 

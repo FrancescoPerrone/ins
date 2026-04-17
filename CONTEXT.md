@@ -154,26 +154,26 @@ was removed as non-canonical. This is an open design question.
 ### AS2 arguments
 
 Generated via `argument(hal, Acts, Val, as2)`. These argue *against* actions by showing
-they would demote a value. Currently excluded from `arg/2`, so they do not participate
-in Dung extensions or the attack relation (a deliberate scope decision — see below).
+they would demote a value. Now included in `arg/2` alongside AS1, so they participate
+in Dung extensions, the attack relation, and VAF. Total argument set: 35 (up from 9).
 
-### Dung extensions (over AS1 arguments)
+### Dung extensions (over AS1+AS2 arguments, 35 total)
 
 - **Grounded**: `[]`
-- **Preferred**: singleton or compatible-pair extensions
-- **Stable**: same sets
+- **Preferred**: 13 extensions
+- **Stable**: subset of preferred
 
 ### VAF preferred extensions by audience
 
-| Audience       | Value order                         | Preferred extensions              |
-|----------------|-------------------------------------|-----------------------------------|
-| `life_first`   | lifeH > lifeC > freedomH > freedomC | 3 lifeH singletons               |
-| `selfish`      | lifeH > freedomH > lifeC > freedomC | 3 lifeH singletons               |
-| `altruistic`   | lifeC > lifeH > freedomC > freedomH | 3 lifeC + freedomC pairs         |
-| `freedom_first`| freedomH > freedomC > lifeH > lifeC | 3 lifeC + freedomC pairs         |
+| Audience       | Value order                         | Preferred extensions |
+|----------------|-------------------------------------|----------------------|
+| `life_first`   | lifeH > lifeC > freedomH > freedomC | 10                  |
+| `selfish`      | lifeH > freedomH > lifeC > freedomC | 10                  |
+| `altruistic`   | lifeC > lifeH > freedomC > freedomH | 10                  |
+| `freedom_first`| freedomH > freedomC > lifeH > lifeC | 6                   |
 
-Note: `freedom_first` gives lifeC+freedomC pairs (not ∅): freedomC > lifeH in this audience,
-so freedomC args defeat lifeH args, leaving the lifeC+freedomC compatible pairs as extensions.
+`freedom_first` gives 6 (not 10): AS2 `freedomH` arguments now participate and survive
+under this audience, partially closing the item 15 gap. See `docs/notes/framing_problem.md`.
 
 ---
 
