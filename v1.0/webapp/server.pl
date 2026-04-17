@@ -15,6 +15,7 @@
 :- use_module('../args').
 :- use_module('../extensions').
 :- use_module('../vaf').
+:- use_module('../credulous').
 
 % Routes
 :- http_handler(root(.),          handle_root,       []).
@@ -22,6 +23,7 @@
 :- http_handler(root(attacks),    handle_attacks,    []).
 :- http_handler(root(extensions), handle_extensions, []).
 :- http_handler(root(vaf),        handle_vaf,        [prefix]).
+:- http_handler(root(credulous),  handle_credulous,  [prefix]).
 
 % server(Port) starts the HTTP server at the given port.
 % e.g. ?- server(8000).  then visit http://127.0.0.1:8000/
@@ -134,6 +136,75 @@ handle_vaf_grounded(Aud) :-
         ]))
     ;   reply_json(json([error='unknown audience', audience=Aud]), [status(404)])
     ).
+
+
+% GET /credulous
+%   Lists all credulously accepted arguments under Dung preferred semantics,
+%   each with its φ₁ dialectical proof (dialogue sequence).
+%   Returns [{"actions":[...],"value":"...","proof":[...]}, ...]
+%
+% GET /credulous/sceptical
+%   Lists all sceptically accepted arguments (present in every preferred ext).
+%
+% GET /credulous/vaf/:audience
+%   Credulously accepted arguments under VAF preferred semantics for audience.
+%
+handle_credulous(Request) :-
+    (   memberchk(path_info(PathInfo), Request),
+        atom_concat('/', Rest, PathInfo),
+        Rest \= ''
+    ->  atomic_list_concat(Parts, '/', Rest),
+        handle_credulous_path(Parts)
+    ;   handle_credulous_dung
+    ).
+
+handle_credulous_path([sceptical]) :-
+    !,
+    findall(J,
+            (arg(Acts, Val),
+             sceptically_accepted(arg(Acts, Val)),
+             arg_to_json(arg(Acts, Val), J)),
+            Accepted),
+    reply_json(Accepted).
+handle_credulous_path([vaf, Aud]) :-
+    !,
+    (   audience(Aud, _)
+    ->  findall(J,
+                (arg(Acts, Val),
+                 vaf_credQA(arg(Acts, Val), Aud, (Seq, _)),
+                 proof_to_json(Seq, SeqJSON),
+                 arg_to_json(arg(Acts, Val), ArgJ),
+                 ArgJ = json(Fields),
+                 J = json([proof=SeqJSON|Fields])),
+                Results),
+        reply_json(json([audience=Aud, credulous=Results]))
+    ;   reply_json(json([error='unknown audience', audience=Aud]), [status(404)])
+    ).
+handle_credulous_path(_) :-
+    reply_json(json([error='not found']), [status(404)]).
+
+handle_credulous_dung :-
+    findall(J,
+            (arg(Acts, Val),
+             credQA(arg(Acts, Val), (Seq, _)),
+             proof_to_json(Seq, SeqJSON),
+             arg_to_json(arg(Acts, Val), ArgJ),
+             ArgJ = json(Fields),
+             J = json([proof=SeqJSON|Fields])),
+            Results),
+    reply_json(Results).
+
+% proof_to_json(+Seq:list, -JSON:list)
+% Converts a dialogue sequence [pro(Arg)|opp(Arg)...] (most recent first)
+% into a JSON array of {"player":"pro"|"opp","actions":[...],"value":"..."}.
+proof_to_json(Seq, JSON) :-
+    reverse(Seq, Chronological),
+    maplist(move_to_json, Chronological, JSON).
+
+move_to_json(pro(arg(Acts, Val)), json([player=pro, actions=ActAtoms, value=Val])) :-
+    maplist(action_to_atom, Acts, ActAtoms).
+move_to_json(opp(arg(Acts, Val)), json([player=opp, actions=ActAtoms, value=Val])) :-
+    maplist(action_to_atom, Acts, ActAtoms).
 
 
 % --- Helpers ---

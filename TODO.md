@@ -165,7 +165,7 @@ Full problem description, results table, and theoretical significance for the ar
 
 ---
 
-## 18. Add dialectical proof / credulous acceptance query (credQA) — OPEN
+## ~~18. Add dialectical proof / credulous acceptance query (credQA)~~ — DONE
 
 ### Why we want this
 
@@ -225,3 +225,11 @@ itself does not need to change. A small adapter module (e.g. `credulous.pl`) wou
 The proof term `(Seq, Pro)` returned by `credQA` should also be exposed via the HTTP API
 (e.g. `GET /credulous/:arg` and `GET /vaf/:audience/credulous/:arg`) so the frontend can
 display the dialogue visually.
+
+Implementation: `v1.0/credulous.pl` — additive module, nothing existing changed.
+Exports: `credQA/2`, `vaf_credQA/3`, `cred_qa/3` (generic), `sceptically_accepted/1`,
+`vaf_sceptically_accepted/2`. The defeat predicate is abstracted so one algorithm
+handles both Dung and VAF. Proof = (Seq, Pro): Seq is the chronological dialogue
+(list of pro/opp moves), Pro is PRO's final admissible set.
+New API endpoints: `GET /credulous`, `GET /credulous/sceptical`,
+`GET /credulous/vaf/:audience`. New dbg.pl sections 16–18 demonstrate all three.

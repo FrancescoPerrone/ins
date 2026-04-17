@@ -8,6 +8,7 @@
 :- use_module(args).
 :- use_module(extensions).
 :- use_module(vaf).
+:- use_module(credulous).
 
 
 %           Starts the PlDoc services
@@ -105,6 +106,28 @@
 :- format("~n--- AS2 arguments (both agents) ---~n"),
    forall((member(Ag, [hal, carla]), argument(Ag, Acts, Val, as2)),
           format("argument(~w, ~w, ~w, as2)~n", [Ag, Acts, Val])).
+
+
+% 16. Credulous acceptance (Dung) — sample: one proof per accepted argument
+:- format("~n--- Credulous acceptance (Dung preferred semantics) ---~n"),
+   forall(
+       (arg(Acts, Val), credQA(arg(Acts,Val), (Seq,_))),
+       format("credulous: arg(~w,~w)~n  proof: ~w~n", [Acts, Val, Seq])
+   ).
+
+% 17. Sceptical acceptance (Dung)
+:- format("~n--- Sceptical acceptance (Dung preferred semantics) ---~n"),
+   forall(
+       (arg(Acts, Val), sceptically_accepted(arg(Acts,Val))),
+       format("sceptical: arg(~w,~w)~n", [Acts, Val])
+   ).
+
+% 18. Credulous acceptance under VAF (one audience as illustration)
+:- format("~n--- Credulous acceptance (VAF, altruistic audience) ---~n"),
+   forall(
+       (arg(Acts, Val), vaf_credQA(arg(Acts,Val), altruistic, (Seq,_))),
+       format("credulous/altruistic: arg(~w,~w)~n  proof: ~w~n", [Acts, Val, Seq])
+   ).
 
 
 %           Listener
