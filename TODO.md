@@ -233,3 +233,13 @@ handles both Dung and VAF. Proof = (Seq, Pro): Seq is the chronological dialogue
 (list of pro/opp moves), Pro is PRO's final admissible set.
 New API endpoints: `GET /credulous`, `GET /credulous/sceptical`,
 `GET /credulous/vaf/:audience`. New dbg.pl sections 16–18 demonstrate all three.
+
+---
+
+## 19. Argument graph visualisation — OPEN
+
+Comparative study of layout and embedding methods for the 35-node attack graph.
+Methods to implement and compare: Fruchterman-Reingold, Kamada-Kawai, spectral layout,
+UMAP on feature matrix, UMAP on graph embedding (Node2Vec / adjacency eigenvectors),
+UMAP on extension-membership matrix. Select the most informative representation for
+the article. Full specification: `docs/specs/argument_graph_visualisation.md`.

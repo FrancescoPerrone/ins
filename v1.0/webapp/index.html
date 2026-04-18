@@ -904,8 +904,11 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById(tab.dataset.page).classList.add('active');
-    // reset scroll
     document.querySelector('.shell-content').scrollTop = 0;
+    // lazy-load heavy tabs on first visit
+    const pg = tab.dataset.page;
+    if (pg === 'pg-extensions' && !DATA.extensions) loadExtensions();
+    if (pg === 'pg-proofs'     && !DATA.proofs)     loadProofs();
   });
 });
 
@@ -921,14 +924,12 @@ document.addEventListener('click', e => {
 });
 
 /* ── Fetch ───────────────────────────────────────────────── */
+// Fast endpoints — load immediately on page start
 get('/args').then(d => { DATA.args = d; renderArgs(); })
   .catch(e => showErr('args-body', e.message));
 
 get('/attacks').then(d => { DATA.attacks = d; renderAttacks(); })
   .catch(e => showErr('attacks-body', e.message));
-
-get('/extensions').then(d => { DATA.extensions = d; renderExtensions(); })
-  .catch(e => showErr('extensions-body', e.message));
 
 get('/vaf').then(audiences =>
   Promise.all(audiences.map(a =>
@@ -937,8 +938,16 @@ get('/vaf').then(audiences =>
 ).then(d => { DATA.vaf = d; renderVAF(); })
   .catch(e => showErr('vaf-body', e.message));
 
-get('/credulous').then(d => { DATA.proofs = d; renderProofs(); })
-  .catch(e => showErr('proofs-body', e.message));
+// Heavy endpoints — loaded lazily on first tab visit
+function loadExtensions() {
+  get('/extensions').then(d => { DATA.extensions = d; renderExtensions(); })
+    .catch(e => showErr('extensions-body', e.message));
+}
+
+function loadProofs() {
+  get('/credulous').then(d => { DATA.proofs = d; renderProofs(); })
+    .catch(e => showErr('proofs-body', e.message));
+}
 </script>
 </body>
 </html>
